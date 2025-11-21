@@ -1,0 +1,166 @@
+{
+  "paralysis_sin": {
+    "id": "paralysis_sin",
+    "name": "麻痺(罪悪)",
+    "description": "行動不能かつ回避値が減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "action_prohibit", "value": true },
+      { "type": "stat_mod", "stat": "evasion_value", "multiplier": -0.50 }
+    ]
+  },
+  "freeze_sin": {
+    "id": "freeze_sin",
+    "name": "凍結(罪悪)",
+    "description": "行動不能かつ回避値が減少。解除時にダメージ",
+    "is_removable": true,
+    "effects": [
+      { "type": "action_prohibit", "value": true },
+      { "type": "stat_mod", "stat": "evasion_value", "multiplier": -0.50 }
+    ],
+    "on_remove": {
+      "effect": "damage",
+      "formula": "caster_max_attack",
+      "multiplier": 0.40
+    }
+  },
+  "seal_sin": {
+    "id": "seal_sin",
+    "name": "封印(罪悪)",
+    "description": "スキル使用不可、毎ターン属性値ダメージ",
+    "is_removable": true,
+    "effects": [
+      { "type": "skill_prohibit", "value": true },
+      { "type": "dot_damage", "formula": "caster_primary_stat", "multiplier": 10.0 }
+    ]
+  },
+  "weakness_sin": {
+    "id": "weakness_sin",
+    "name": "虚弱(罪悪)",
+    "description": "攻撃力が低下し、与える属性ダメージも減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": -0.50 },
+      { "type": "damage_dealt_mod", "damage_type": "elemental", "value": -0.50 }
+    ]
+  },
+  "kinkin_sin": {
+    "id": "kinkin_sin",
+    "name": "限禁(罪悪)",
+    "description": "全ステータスと会心ダメージが減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": -0.20 },
+      { "type": "stat_mod", "stat": "crit_damage", "value": -2.00 }
+    ]
+  },
+  "divine_judgment_sin": {
+    "id": "divine_judgment_sin",
+    "name": "聖裁(罪悪)",
+    "description": "与ダメージ減少、残りターンに応じて特殊効果無効",
+    "is_removable": true,
+    "effects": [
+      { "type": "damage_dealt_mod", "value": -0.40 },
+      { "type": "disable_passive_effect", "condition": "duration_dependent" }
+    ]
+  },
+  "blind_sin": {
+    "id": "blind_sin",
+    "name": "盲目(罪悪)",
+    "description": "命中低下。攻撃を外すと与ダメージ減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "hit_rating", "value": -0.50 }
+    ],
+    "mechanics": {
+      "on_miss": {
+        "effect": "reduce_damage_dealt",
+        "value": 0.20
+      }
+    }
+  },
+  "armor_break_sin": {
+    "id": "armor_break_sin",
+    "name": "破甲(罪悪)",
+    "description": "防御力低下。攻撃を受けるたびに被ダメージ増加",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "defense_percent", "value": -0.80 }
+    ],
+    "mechanics": {
+      "on_hit_received": {
+        "effect": "increase_damage_taken",
+        "value": 0.05,
+        "stackable": true
+      }
+    }
+  },
+  "crush_sin": {
+    "id": "crush_sin",
+    "name": "撃砕(罪悪)",
+    "description": "物理・法術防御低下。受ける会心ダメージ増加",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "physical_defense_percent", "value": -0.80 },
+      { "type": "stat_mod", "stat": "magic_defense_percent", "value": -0.80 },
+      { "type": "stat_mod", "stat": "crit_damage_received", "value": 0.50 }
+    ]
+  },
+  "poison_sin": {
+    "id": "poison_sin",
+    "name": "毒(罪悪)",
+    "description": "毎ターンHP3%減少。有益・聖護バフの付与を阻害し、残りターン減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "dot_damage", "val": 0.03 },
+      { "type": "prevent_buff_application", "target_types": ["beneficial", "sacred"] },
+      { "type": "reduce_duration_on_trigger", "val": 1 }
+    ]
+  },
+  "burn_sin": {
+    "id": "burn_sin",
+    "name": "燃焼(罪悪)",
+    "description": "毎ターン付与時ダメージの50%。特定条件でダメージ倍化・聖護解除",
+    "is_removable": true,
+    "effects": [
+      {
+        "type": "dot_damage",
+        "formula": "initial_skill_damage",
+        "multiplier": 0.50
+      }
+    ],
+    "mechanics": {
+      "condition_trigger": {
+        "effect": ["double_damage", "remove_sacred_buff"],
+        "cost": "reduce_duration"
+      }
+    }
+  },
+  "bleed_sin": {
+    "id": "bleed_sin",
+    "name": "流血(罪悪)",
+    "description": "HP回復不可。武将・弓将からの被会心率増加",
+    "is_removable": true,
+    "effects": [
+      { "type": "heal_block", "value": true },
+      { "type": "crit_chance_received_up", "condition": "attacker_is_warrior_or_archer", "value": 0.50 }
+    ]
+  },
+  "majesty_sin": {
+    "id": "majesty_sin",
+    "name": "威光(罪悪)",
+    "description": "被弾時50%で聖護解除。蛍火と重複時、ターン開始時に100%解除",
+    "is_removable": true,
+    "mechanics": {
+      "on_hit_received": {
+        "effect": "remove_sacred_buff",
+        "probability": 0.50
+      },
+      "synergy": {
+        "with": "firefly_sin",
+        "effect": "remove_sacred_or_beneficial_on_turn_start",
+        "probability": 1.0
+      }
+    }
+  }
+}

@@ -1,0 +1,456 @@
+{
+  "//_comment": "=== 1. バリア・ダメージ吸収系 ===",
+  "blood_oath_sacred": {
+    "id": "blood_oath_sacred",
+    "name": "血誓(聖護)",
+    "description": "HPベースのダメージ吸収バリア。ダメカなし、重ね掛け可能",
+    "mechanics": {
+      "shield_type": "hp_based",
+      "shield_priority": 1,
+      "stackable": true,
+      "stack_limit": "caster_max_hp",
+      "damage_reduction": 0.0,
+      "merge_rule": "stack_value",
+      "description": "処理順1位。吸収量は付与者のHP上限まで累積可能"
+    }
+  },
+  "extinction_sacred": {
+    "id": "extinction_sacred",
+    "name": "滅勢(聖護)",
+    "description": "HPベースのダメージ吸収バリア。被会心ダメージを大幅カット",
+    "mechanics": {
+      "shield_type": "hp_based",
+      "shield_priority": 2,
+      "stackable": false,
+      "damage_reduction": {
+        "condition": "on_crit_received",
+        "value": 0.65,
+        "description": "被会心ダメージを65%カット"
+      },
+      "merge_rule": "priority_duration_then_potency",
+      "description": "処理順2位。重ね掛け不可（ターン数のみ更新）"
+    }
+  },
+  "shadow_armor_sacred": {
+    "id": "shadow_armor_sacred",
+    "name": "影甲(聖護)",
+    "description": "MPベースのダメージ吸収バリア。残HPが低いほどダメージカット率上昇",
+    "mechanics": {
+      "shield_type": "mp_based",
+      "shield_priority": 3,
+      "stackable": false,
+      "multiplier": 12,
+      "damage_reduction": {
+        "formula": "hp_based_scaling",
+        "min_value": 0.30,
+        "max_value": 0.60,
+        "description": "残HP%に応じてカット率30%～60%変動"
+      },
+      "merge_rule": "priority_duration_then_potency",
+      "description": "処理順3位。重ね掛け不可（ターン数が多い方を優先して上書き）"
+    }
+  },
+
+  "//_comment": "=== 2. 防御・カウンター系 ===",
+  "taunt_sacred": {
+    "id": "taunt_sacred",
+    "name": "嘲弄(聖護)",
+    "description": "自身のHPが敵より高い場合、攻撃を引き付ける（集中等除く）",
+    "effects": [
+      {
+        "type": "aggro_redirection",
+        "condition": "self_hp_gt_target_hp",
+        "ignore_types": ["concentrated", "switch", "counter"]
+      }
+    ]
+  },
+  "cover_sacred": {
+    "id": "cover_sacred",
+    "name": "援護(聖護)",
+    "description": "受けるダメージ減少、反射増加、被弾時に流血(罪悪)付与",
+    "mechanics": {
+      "damage_reduction": { "value": 0.50 },
+      "damage_reflection": { "value": 0.50 }
+    },
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "effect": "apply_debuff",
+        "debuff_id": "bleed_sin",
+        "probability": 0.50
+      }
+    ]
+  },
+  "thorns_sacred": {
+    "id": "thorns_sacred",
+    "name": "荊棘(聖護)",
+    "description": "反射増加、大ダメージを受けた時に攻撃者の聖護を解除",
+    "effects": [
+      { "type": "stat_mod", "stat": "damage_reflection", "value": 1.00 }
+    ],
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "condition": { "damage_taken": ">", "value": 0.05, "source": "self_max_hp" },
+        "effect": "remove_buff",
+        "target_buff_types": ["sacred"],
+        "count": 1
+      }
+    ]
+  },
+  "flame_shield_sacred": {
+    "id": "flame_shield_sacred",
+    "name": "炎盾(聖護)",
+    "description": "防御力とダメージ反射を増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "defense_percent", "value": 1.0 },
+      { "type": "stat_mod", "stat": "damage_reflection", "value": 0.50 }
+    ]
+  },
+  "thunder_armor_sacred": {
+    "id": "thunder_armor_sacred",
+    "name": "雷鎧(聖護)",
+    "description": "被会心ダメカ、防御増、麻痺カウンター",
+    "mechanics": {
+      "damage_reduction": {
+        "condition": "on_crit_received",
+        "value": 0.50
+      }
+    },
+    "effects": [
+      { "type": "stat_mod", "stat": "defense_percent", "value": 1.40 }
+    ],
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "effect": "apply_debuff",
+        "debuff_id": "paralysis_sin",
+        "probability": 1.0
+      }
+    ]
+  },
+  "ice_armor_sacred": {
+    "id": "ice_armor_sacred",
+    "name": "氷鎧(聖護)",
+    "description": "ダメカ、防御増、凍結カウンター",
+    "mechanics": {
+      "damage_reduction": [
+        { "value": 0.40 },
+        { "condition": "attacker_has_status_ailment", "value": 0.20, "type": "add" }
+      ]
+    },
+    "effects": [
+      { "type": "stat_mod", "stat": "defense_percent", "value": 1.40 }
+    ],
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "effect": "apply_debuff",
+        "debuff_id": "freeze_sin",
+        "probability": 1.0
+      }
+    ]
+  },
+  "rock_armor_sacred": {
+    "id": "rock_armor_sacred",
+    "name": "岩鎧(聖護)",
+    "description": "防御増、回復率増、HP減少時ダメカ",
+    "effects": [
+      { "type": "stat_mod", "stat": "defense_percent", "value": 1.50 },
+      { "type": "stat_mod", "stat": "hp_recovery_rate", "value": 0.05 }
+    ],
+    "mechanics": {
+      "damage_reduction": {
+        "condition": "hp_percent_below_threshold",
+        "threshold": 0.50,
+        "formula": "hp_based_cut"
+      }
+    }
+  },
+  "toha_sacred": {
+    "id": "toha_sacred",
+    "name": "踏波(聖護)",
+    "description": "ターン数に応じてダメカと耐性が上昇",
+    "mechanics": {
+      "damage_reduction": {
+        "formula": "base_value * duration",
+        "base_value": 0.15
+      }
+    },
+    "effects": [
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "scaling": "duration",
+        "multiplier": 0.10
+      }
+    ]
+  },
+  "shadow_sacred": {
+    "id": "shadow_sacred",
+    "name": "残影(聖護)",
+    "description": "回避率とダメカ増加、回避で強化",
+    "effects": [
+      { "type": "stat_mod", "stat": "evasion_percent", "value": 0.60 }
+    ],
+    "mechanics": {
+      "damage_reduction": {
+        "base_value": 0.40,
+        "max_value": 0.70,
+        "scaling": "dodge_count_in_turn"
+      }
+    }
+  },
+  "halo_sacred": {
+    "id": "halo_sacred",
+    "name": "光輪(聖護)",
+    "description": "ダメカと物理会心ダメ耐性増加",
+    "mechanics": {
+      "damage_reduction": { "value": 0.40 }
+    },
+    "effects": [
+      { "type": "stat_mod", "stat": "physical_crit_damage_resistance", "value": 0.40 }
+    ]
+  },
+  "veil_sacred": {
+    "id": "veil_sacred",
+    "name": "帷幕(聖護)",
+    "description": "武将・弓将からのダメカ増、謀士からは被ダメ増",
+    "mechanics": {
+      "damage_reduction": [
+        { "condition": "source_class_is_warrior_or_archer", "value": 0.40 }
+      ],
+      "damage_taken_mod": [
+        { "condition": "source_class_is_strategist", "value": 0.20 }
+      ]
+    }
+  },
+  "determination_sacred": {
+    "id": "determination_sacred",
+    "name": "決意(聖護)",
+    "description": "ダメカ増、嘲弄・援護の解除無視",
+    "mechanics": {
+      "damage_reduction": { "value": 0.30 }
+    },
+    "special_properties": [
+      { "type": "prevent_buff_removal", "target_buffs": ["taunt_sacred", "cover_sacred"] }
+    ]
+  },
+  "resolute_sacred": {
+    "id": "resolute_sacred",
+    "name": "決然(聖護)",
+    "description": "ダメカ増、敵への虚弱・盲目の解除無視",
+    "mechanics": {
+      "damage_reduction": { "value": 0.30 }
+    },
+    "special_properties": [
+      { "type": "prevent_debuff_removal_on_enemy", "target_debuffs": ["weakness_sin", "blind_sin"] }
+    ]
+  },
+  "endurance_sacred": {
+    "id": "endurance_sacred",
+    "name": "堅忍(聖護)",
+    "description": "物理・法術の会心ダメ耐性増",
+    "effects": [
+      { "type": "stat_mod", "stat": "physical_crit_damage_resistance", "value": 1.00 },
+      { "type": "stat_mod", "stat": "magic_crit_damage_resistance", "value": 0.20 }
+    ]
+  },
+  "wind_rider_sacred": {
+    "id": "wind_rider_sacred",
+    "name": "御風(聖護)",
+    "description": "範囲攻撃のダメカ増",
+    "mechanics": {
+      "damage_reduction": { "condition": "attack_type_is_aoe", "value": 0.50 }
+    }
+  },
+  "resistance_sacred": {
+    "id": "resistance_sacred",
+    "name": "抵抗(聖護)",
+    "description": "連撃のダメカ増",
+    "mechanics": {
+      "damage_reduction": { "condition": "attack_type_is_multi_hit", "value": 0.50 }
+    }
+  },
+  "mist_sacred": {
+    "id": "mist_sacred",
+    "name": "霧中(聖護)",
+    "description": "範囲攻撃のみ受ける、耐性アップ",
+    "effects": [
+      { "type": "target_restriction", "value": "aoe_only" },
+      { "type": "resistance_up", "value": 0.50 }
+    ]
+  },
+
+  "//_comment": "=== 3. 攻撃・ステータス強化系 ===",
+  "rage_sacred": {
+    "id": "rage_sacred",
+    "name": "暴走(聖護)",
+    "description": "攻撃力とステータスが大幅増加、被ダメージも少し増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 1.0 },
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.60 },
+      { "type": "receive_damage_mod", "value": 0.25 },
+      { "type": "status_immunity", "target_types": ["negative"] }
+    ]
+  },
+  "accumulate_sacred": {
+    "id": "accumulate_sacred",
+    "name": "畜力(聖護)",
+    "description": "攻撃力、反射耐性、状態異常耐性を増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 0.80 },
+      { "type": "stat_mod", "stat": "reflect_resistance", "value": 0.80 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": 0.80 }
+    ]
+  },
+  "seven_stars_sacred": {
+    "id": "seven_stars_sacred",
+    "name": "七星(聖護)",
+    "description": "ターン数に応じて攻撃力、会心率、ステータスが増加",
+    "mechanics": {
+      "stat_scaling": {
+        "scaling_factor": "duration",
+        "stats": [
+          { "stat": "attack_percent", "base_value": 0.15 },
+          { "stat": "crit_rate", "base_value": 0.15 },
+          { "stat": "all_stats_percent", "base_value": 0.10 }
+        ]
+      }
+    }
+  },
+  "blessing_sacred": {
+    "id": "blessing_sacred",
+    "name": "祝福(聖護)",
+    "description": "攻撃力と会心率増加、攻撃を受けるとターン数を消費して無効化",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
+      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+    ],
+    "special_properties": [
+      {
+        "type": "damage_negation",
+        "cost_type": "reduce_duration",
+        "cost_value": 1,
+        "condition": "on_hit_received"
+      }
+    ]
+  },
+  "fortune_sacred": {
+    "id": "fortune_sacred",
+    "name": "幸運(聖護)",
+    "description": "ステータス、会心率、状態異常耐性を増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.20 },
+      { "type": "stat_mod", "stat": "crit_rate", "value": 0.30 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+    ]
+  },
+  "inspire_sacred": {
+    "id": "inspire_sacred",
+    "name": "奮起(聖護)",
+    "description": "攻撃力、防御力、ステータスをバランス良く増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
+      { "type": "stat_mod", "stat": "defense_percent", "value": 0.80 },
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.20 }
+    ]
+  },
+  "encourage_sacred": {
+    "id": "encourage_sacred",
+    "name": "鼓舞(聖護)",
+    "description": "付与者のステータスを基準に能力上昇",
+    "mechanics": {
+      "stat_transfer": {
+        "basis": "caster_stats",
+        "stats": [
+          { "source": "attack_max", "target": "attack_min_max", "multiplier": 0.25 },
+          { "source": "defense", "target": "defense", "multiplier": 0.50 }
+        ]
+      }
+    }
+  },
+  "cold_blood_sacred": {
+    "id": "cold_blood_sacred",
+    "name": "冷血(聖護)",
+    "description": "会心率増加、敵の挑発系効果を無視",
+    "effects": [
+      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
+      { "type": "target_ignore_taunt", "value": true }
+    ]
+  },
+  "heaven_gift_sacred": {
+    "id": "heaven_gift_sacred",
+    "name": "天授(聖護)",
+    "description": "攻撃時、主属性×数倍の防御無視ダメージを加算",
+    "mechanics": {
+      "extra_damage": {
+        "formula": "primary_stat_x_multiplier",
+        "can_crit": true,
+        "ignore_defense": true
+      }
+    }
+  },
+
+  "//_comment": "=== 4. 耐性・特殊効果系 ===",
+  "flower_words_sacred": {
+    "id": "flower_words_sacred",
+    "name": "花詞(聖護)",
+    "description": "デバフを無効化し、ターン数を消費する",
+    "special_properties": [
+      {
+        "type": "debuff_immunity",
+        "target_types": ["negative", "control"],
+        "cost_type": "reduce_duration",
+        "cost_value": 1,
+        "trigger": "on_debuff_attempt"
+      }
+    ]
+  },
+  "fixed_soul_sacred": {
+    "id": "fixed_soul_sacred",
+    "name": "定魂(聖護)",
+    "description": "足止め（制限）系デバフを無効化し、ターン数を消費する",
+    "special_properties": [
+      {
+        "type": "debuff_immunity",
+        "target_types": ["control_restriction"],
+        "cost_type": "reduce_duration",
+        "cost_value": 1
+      }
+    ]
+  },
+  "shinyou_sacred": {
+    "id": "shinyou_sacred",
+    "name": "心曜(聖護)",
+    "description": "状態異常耐性が上昇し、毎ターンデバフを解除する",
+    "effects": [
+      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
+      { "type": "auto_cleanse", "count": 1, "trigger": "pre_action" }
+    ]
+  },
+  "imperial_fire_sacred": {
+    "id": "imperial_fire_sacred",
+    "name": "御火(聖護)",
+    "description": "燃焼と火傷への耐性が大幅に上昇",
+    "effects": [
+      { "type": "status_resistance_specific", "target_debuffs": ["burn_sin", "burn", "scald"], "value": 1.20 }
+    ]
+  },
+  "vitality_sacred": {
+    "id": "vitality_sacred",
+    "name": "生気(聖護)",
+    "description": "流血への耐性が上昇",
+    "effects": [
+      { "type": "status_resistance_specific", "target_debuffs": ["bleed_sin", "bleed"], "value": 0.50 }
+    ]
+  },
+  "time_reversal_sacred": {
+    "id": "time_reversal_sacred",
+    "name": "時遡(聖護)",
+    "description": "受けたダメージを無効化し、回復に変換する場合あり",
+    "special_properties": [
+      { "type": "damage_conversion", "mode": "nullify_or_heal" }
+    ]
+  }
+}
