@@ -1,0 +1,332 @@
+{
+  "character_info": {
+    "id": "gonggong_mr",
+    "name": "共工",
+    "rarity": "MR",
+    "class": "strategist",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "風嵐招来",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "highest_max_attack",
+        "count": 4,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 7,
+          "target": "highest_max_attack"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 16
+          },
+          {
+            "source_stat": "max_attack",
+            "multiplier": 1.0
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_skill",
+          "effects": [
+            {
+              "type": "copy_buffs",
+              "target": "enemies",
+              "target_buff_types": ["beneficial", "sacred"],
+              "description": "敵の全有益・聖護をコピー"
+            }
+          ]
+        },
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": ["beneficial", "sacred"],
+              "count": 99
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "extreme_cold_special",
+              "name": "極寒",
+              "probability": 0.50,
+              "duration": 2
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "freeze_sin",
+              "name": "凍結(罪悪)",
+              "probability": 0.50,
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "effects": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": "<",
+                "value": 0.50
+              },
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "ice_armor_sacred",
+              "name": "氷鎧(聖護)",
+              "duration": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "天柱破壊",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_stat_intelligence",
+        "count": 1,
+        "repeat": 5,
+        "repeat_condition": {
+          "trigger": "on_crit",
+          "max_extra_repeats": 5
+        }
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 10
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.60
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "steal_buffs",
+              "target": "enemy",
+              "count": 1,
+              "priority": "missing_on_self",
+              "description": "有益or聖護を解除して自身に付与"
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "crush_sin",
+              "name": "撃砕(罪悪)",
+              "probability": 1.0,
+              "duration": 2
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_stat": "hp_percent",
+                "operator": "<",
+                "compare_to": "self_hp_percent"
+              },
+              "multiplier": 2.0,
+              "note": "原文の'敵の残HP%＜敵'を'敵の残HP%＜自身'と解釈"
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_self",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.35
+            }
+          ]
+        }
+      ],
+      "special_properties": {
+        "immortality_during_skill": {
+          "min_hp_percent": 1,
+          "exceptions": ["skill_start_lt_1_percent", "counter_damage"]
+        }
+      }
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "三丈凍鎧",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        { "stat": "attack_percent", "value": 0.70 },
+        { "stat": "intelligence", "scaling": "level", "multiplier": 360 }
+      ]
+    },
+    {
+      "name": "生気常在",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        { "stat": "hp_percent", "value": 0.70 },
+        { "stat": "status_res_percent", "value": 0.50 }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "strength_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "騰蛇の翼",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          { "stat": "magic_crit_damage_percent", "value": 0.20 }
+        ],
+        "damage_reduction": [
+          { "source_type": "strength_based", "subtrahend_stat": "self_intelligence", "multiplier": 2 },
+          { "source_type": "attack_based", "subtrahend_stat": "self_intelligence", "multiplier": 1 }
+        ]
+      },
+      "battle_start_effects": [
+        { "buff": "ice_armor_sacred", "duration": "infinite", "removable": false },
+        { "buff": "deity", "duration": "infinite", "removable": false }
+      ],
+      "special_rules": {
+        "debuff_property_override": {
+          "target_debuff": "freeze_sin",
+          "properties": [
+            { "type": "stack_duration", "condition": "multi_application", "cap": 2 },
+            { "type": "unremovable", "condition": "duration > 1" }
+          ]
+        }
+      },
+      "trigger_effects": [
+        {
+          "trigger": "ally_active_skill_non_aoe_fatal",
+          "effects": [
+            {
+              "type": "extra_attack",
+              "target": "lowest_stat_vit",
+              "count": 1,
+              "damage_formula": {
+                 "type": "true_damage",
+                 "source_stat": "intelligence",
+                 "multiplier": 25
+              },
+              "pre_hit_effects": [
+                { "type": "remove_buff", "target": "enemy", "count": 99 },
+                { "type": "apply_debuff", "debuff_id": "tear_sin", "name": "引裂(罪悪)", "duration": 4, "probability": 1.0 }
+              ],
+              "hit_corrections": [
+                { "condition": { "self_stat": "intelligence", "operator": ">", "target_stat": "intelligence" }, "special_effect": "guaranteed_crit" },
+                { "condition": { "self_stat": "max_hp", "operator": ">", "target_stat": "hp_value" }, "special_effect": "guaranteed_hit" }
+              ],
+              "extra_damage": { "type": "true_damage", "source_stat": "vit", "multiplier": 10 }
+            }
+          ]
+        },
+        {
+           "trigger": "on_sacred_buff_removed",
+           "effect": "ignore_removal",
+           "probability": 0.50
+        }
+      ],
+      "combat_mechanics": {
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            "ignore_damage",
+            "heal_100_percent"
+          ]
+        }
+      }
+    },
+    {
+      "name": "玄氷の加護",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        { "stat": "vit", "scaling": "level", "multiplier": 300 },
+        { "stat": "status_res_percent", "value": 1.0 }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": { "subtrahend_stat": "intelligence", "multiplier": 3 }
+        }
+      },
+      "entry_effects": {
+        "allies": {
+          "target": ["self", "highest_max_atk_strategists_3"],
+          "buffs": ["sentaku_sacred", "reinou_sacred"],
+          "duration": 4
+        }
+      },
+      "special_rules": {
+        "buff_property_override": {
+          "target_buff": "reinou_sacred",
+          "property": "unremovable"
+        }
+      },
+      "trigger_effects": [
+        {
+           "trigger": "ally_strategist_damage_taken",
+           "condition": { "damage_taken": ">", "value": 0.10, "source": "target_max_hp" },
+           "effect": {
+             "type": "apply_buff_or_extend",
+             "buff_id": "toha_sacred",
+             "name": "踏波(聖護)",
+             "initial_duration": 1,
+             "max_duration": 2
+           }
+        }
+      ]
+    }
+  ]
+}

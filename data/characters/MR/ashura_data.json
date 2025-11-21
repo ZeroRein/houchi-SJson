@@ -1,0 +1,470 @@
+{
+    "character_info": {
+      "id": "ashura_mr",
+      "name": "阿修羅",
+      "rarity": "MR",
+      "class": "archer",
+      "element": "none"
+    },
+    "active_skills": [
+      {
+        "id": 1,
+        "name": "非天の道",
+        "type": "active",
+        "unlock_level": 0,
+        "targeting": {
+          "type": "relative_and_adjacent",
+          "priority": "relative_opposite",
+          "ignore_taunt": true,
+          "ignore_mark": true,
+          "count": 3,
+          "repeat": 2
+        },
+        "damage_formula": {
+          "base_percent": 900,
+          "type": "physical",
+          "additions": [
+            {
+              "source_stat": "agility",
+              "multiplier": 12
+            },
+            {
+              "source_stat": "attack",
+              "multiplier": 0.80
+            }
+          ]
+        },
+        "action_flow": [
+          {
+            "phase": "pre_skill",
+            "effects": [
+              {
+                "type": "apply_buff",
+                "target": "self",
+                "buff_id": "taunt_sacred",
+                "duration": 1
+              },
+              {
+                "type": "apply_buff",
+                "target": "highest_agility_ally_archers",
+                "exclude_self": true,
+                "count": 3,
+                "buffs": [
+                  "cold_blood_sacred",
+                  "rampage_sacred"
+                ],
+                "duration": 4
+              }
+            ]
+          },
+          {
+            "phase": "pre_hit",
+            "effects": [
+              {
+                "type": "apply_debuff",
+                "debuff_id": "seal_sin",
+                "probability": 1.0,
+                "duration": 2
+              },
+              {
+                "type": "apply_debuff",
+                "debuff_id": "bleed_sin",
+                "probability": 1.0,
+                "duration": 4
+              }
+            ]
+          },
+          {
+            "phase": "post_skill",
+            "conditions": {
+              "remaining_enemies": 1
+            },
+            "extra_action": {
+              "type": "attack",
+              "count": 4,
+              "target": "same_target"
+            }
+          },
+          {
+            "phase": "end_of_skill",
+            "effects": [
+              {
+                "type": "heal_team",
+                "target": "allies_6",
+                "amount_basis": "total_damage_dealt",
+                "multiplier": 0.10
+              },
+              {
+                "type": "reduce_debuff_duration",
+                "target": "allies_6",
+                "count": 4,
+                "turns": 1
+              },
+              {
+                "type": "apply_class_buff",
+                "target": "allies_6",
+                "duration": 4,
+                "mapping": {
+                  "warrior": "breaking_wave",
+                  "archer": "reduced_momentum_sacred",
+                  "strategist": "in_fog"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "降魔除障",
+        "type": "active",
+        "unlock_level": 2,
+        "targeting": {
+          "type": "lowest_hp_percent",
+          "count": 4,
+          "repeat": 3
+        },
+        "damage_formula": {
+          "base_percent": 900,
+          "type": "physical",
+          "additions": [
+            {
+              "source_stat": "agility",
+              "multiplier": 12
+            },
+            {
+              "source_stat": "attack",
+              "multiplier": 0.60
+            }
+          ]
+        },
+        "action_flow": [
+          {
+            "phase": "pre_hit",
+            "effects": [
+              {
+                "type": "apply_debuff",
+                "debuff_id": "majesty_sin",
+                "probability": 1.0,
+                "duration": 4
+              },
+              {
+                "type": "apply_debuff",
+                "debuff_id": "gale_sin",
+                "probability": 1.0,
+                "duration": 4
+              }
+            ]
+          },
+          {
+            "phase": "on_hit",
+            "damage_corrections": [
+              {
+                "condition": {
+                  "logic": "AND",
+                  "criteria": [
+                    {
+                      "target_stat": "hp_percent",
+                      "operator": "<",
+                      "value": 0.35
+                    },
+                    {
+                      "target_stat": "hp_value",
+                      "operator": "<=",
+                      "compare_to": "self_max_attack",
+                      "compare_multiplier": 10
+                    }
+                  ]
+                },
+                "special_effect": "instant_kill"
+              }
+            ]
+          },
+          {
+            "phase": "post_skill",
+            "conditions": {
+              "remaining_enemies": 1
+            },
+            "extra_action": {
+              "type": "attack",
+              "count": 4,
+              "target": "same_target"
+            }
+          },
+          {
+            "phase": "end_of_skill",
+            "effects": [
+              {
+                "type": "heal_team",
+                "target": "allies_6",
+                "amount_basis": "total_damage_dealt",
+                "multiplier": 0.10
+              },
+              {
+                "type": "reduce_debuff_duration",
+                "target": "allies_6",
+                "count": 4,
+                "turns": 1
+              },
+              {
+                "type": "apply_class_buff",
+                "target": "allies_6",
+                "duration": 4,
+                "mapping": {
+                  "warrior": "breaking_wave",
+                  "archer": "reduced_momentum_sacred",
+                  "strategist": "in_fog"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "passive_skills": [
+      {
+        "name": "天眼の洞察",
+        "type": "passive_stat",
+        "unlock_level": 1,
+        "bonuses": [
+          {
+            "stat": "attack_percent",
+            "value": 0.70
+          },
+          {
+            "stat": "agility",
+            "scaling": "level",
+            "multiplier": 400
+          }
+        ]
+      },
+      {
+        "name": "浄念の白蓮",
+        "type": "passive_resonance",
+        "unlock_level": 3,
+        "bonuses": [
+          {
+            "stat": "hp_percent",
+            "value": 0.70
+          },
+          {
+            "stat": "status_res_percent",
+            "value": 0.75
+          }
+        ],
+        "mechanics": {
+          "damage_reduction": {
+            "source_damage_type": "intelligence_based",
+            "reduction_formula": {
+              "subtrahend_stat": "agility",
+              "multiplier": 3
+            }
+          }
+        }
+      },
+      {
+        "name": "善悪一念",
+        "type": "passive_awakening",
+        "unlock_level": 5,
+        "bonuses": [
+          {
+            "condition": "in_battle",
+            "stat": "agility_percent",
+            "value": 0.25
+          },
+          {
+            "target": "ally_archers",
+            "stat": "reflect_resistance",
+            "value": 0.25
+          }
+        ],
+        "aura_effects": {
+          "condition": "self_alive",
+          "target": "allies",
+          "damage_reduction": [
+            {
+              "source_type": "intelligence_based",
+              "subtrahend_stat": "self_agility",
+              "multiplier": 2
+            },
+            {
+              "source_type": "attack_based",
+              "subtrahend_stat": "self_agility",
+              "multiplier": 1
+            }
+          ]
+        },
+        "battle_start_effects": [
+          {
+            "buff": "cold_blood_sacred",
+            "duration": "infinite",
+            "removable": false
+          },
+          {
+            "buff": "rampage_sacred",
+            "duration": "infinite",
+            "removable": false
+          },
+          {
+            "buff": "deity",
+            "duration": "infinite"
+          }
+        ],
+        "combat_mechanics": {
+          "on_skill_attack": {
+            "crit_rate_bonus": {
+              "base": 0.10,
+              "max": 0.40,
+              "scaling_stat": "self_hp_percent",
+              "scaling_direction": "lower_is_better"
+            }
+          },
+          "on_skill_hit": {
+            "extra_damage": {
+              "type": "true_damage",
+              "source_stat": "vit",
+              "multiplier": 10,
+              "ignore_modifiers": true
+            }
+          },
+          "enemy_state_override": {
+            "target_debuff": "majesty_sin",
+            "property": "unremovable"
+          },
+          "on_hit_taken": [
+            {
+              "effect": "apply_buff",
+              "buff_id": "chingen",
+              "duration": 1
+            },
+            {
+              "condition": {
+                "damage_taken": ">",
+                "value": 0.05,
+                "source": "self_max_hp"
+              },
+              "exclude_types": [
+                "counter",
+                "splash"
+              ],
+              "effects": [
+                {
+                  "type": "remove_buff",
+                  "target": "attacker",
+                  "target_buff_types": [
+                    "beneficial",
+                    "sacred"
+                  ],
+                  "count": 1
+                },
+                {
+                  "type": "apply_buff",
+                  "target": "self",
+                  "buff_id": "jade_wall",
+                  "duration": 1
+                }
+              ]
+            }
+          ],
+          "on_dodge": {
+            "effect": "reduce_buff_duration",
+            "buff_id": "chingen",
+            "amount": 1
+          },
+          "fatal_damage_response": {
+            "max_triggers": 4,
+            "effects": [
+              "ignore_damage",
+              "cleanse_all_abnormalities",
+              {
+                "type": "reduce_debuff_duration",
+                "count": 4,
+                "turns": 2,
+                "target_types": [
+                  "debuff",
+                  "calamity"
+                ]
+              },
+              {
+                "type": "heal",
+                "percent": 0.80
+              },
+              {
+                "type": "apply_buff",
+                "buffs": [
+                  "shadow_sacred",
+                  "reduced_momentum_sacred"
+                ],
+                "duration": 4
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "修羅の真姿",
+        "type": "passive_resonance",
+        "unlock_level": 7,
+        "bonuses": [
+          {
+            "stat": "vit",
+            "scaling": "level",
+            "multiplier": 400
+          },
+          {
+            "stat": "status_res_ignore_percent",
+            "value": 1.0
+          }
+        ],
+        "mechanics": {
+          "damage_reduction": {
+            "source_damage_type": "attack_based",
+            "reduction_formula": {
+              "subtrahend_stat": "agility",
+              "multiplier": 3
+            }
+          }
+        },
+        "entry_effects": {
+          "allies": {
+            "target": [
+              "self",
+              "highest_agility_archers_3"
+            ],
+            "buffs": [
+              "shadow_sacred"
+            ],
+            "duration": 4
+          }
+        },
+        "special_rules": {
+          "buff_property_override": {
+            "target_buff": "shadow_sacred",
+            "target_class": "archer",
+            "condition": "duration > 1",
+            "property": "unremovable"
+          }
+        },
+        "trigger_effects": [
+          {
+            "trigger": "ally_archer_skill_fatal_damage",
+            "effects": [
+              {
+                "type": "heal_self",
+                "amount_percent": 0.20
+              },
+              {
+                "type": "apply_buff_or_stack_shield",
+                "buff_id": "reduced_momentum_sacred",
+                "duration": 4,
+                "shield_cap": {
+                  "basis": "target_max_hp",
+                  "multiplier": 0.50
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

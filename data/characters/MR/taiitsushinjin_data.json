@@ -1,0 +1,341 @@
+{
+  "character_info": {
+    "id": "taiitsushinjin_mr",
+    "name": "太乙真人",
+    "rarity": "MR",
+    "class": "strategist",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "煩悩滅却",
+      "type": "support",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "allies_6"
+      },
+      "action_flow": [
+        {
+          "phase": "pre_skill",
+          "effects": [
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 2
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buffs": [
+                {
+                  "id": "kiki_sacred",
+                  "name": "奇羈(聖護)",
+                  "duration": 4
+                },
+                {
+                  "id": "shadow_armor_sacred",
+                  "name": "影甲(聖護)",
+                  "duration": 2
+                },
+                {
+                  "id": "endurance_sacred",
+                  "name": "堅忍(聖護)",
+                  "duration": 2
+                }
+              ]
+            },
+            {
+              "type": "apply_buff",
+              "target": "highest_max_attack_allies_2_exclude_self",
+              "buff_id": "rampage_sacred",
+              "name": "暴走(聖護)",
+              "duration": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "ナタちゃんだ！",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "highest_max_attack",
+        "count": 4,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 4,
+          "target": "highest_max_attack"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 600,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 20
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.60
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buff_id": "rampage_sacred",
+              "name": "暴走(聖護)",
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 99,
+              "detail": "全解除"
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "crush_sin",
+              "name": "撃砕(罪悪)",
+              "probability": 1.0,
+              "duration": 2
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "weakness_sin",
+              "name": "虚弱(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "intelligence",
+                "operator": ">",
+                "target_stat": "intelligence"
+              },
+              "special_effect": [
+                "crit_rate_boost_50",
+                "ignore_status_res_100"
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buffs": [
+                {
+                  "id": "reiou_sacred",
+                  "name": "霊応(聖護)",
+                  "duration": 4
+                },
+                {
+                  "id": "shinyou_sacred",
+                  "name": "心曜(聖護)",
+                  "duration": 2
+                }
+              ]
+            },
+            {
+              "type": "apply_buff",
+              "target": "lowest_vit_ally_exclude_self",
+              "buff_id": "seiren_special",
+              "name": "青蓮",
+              "duration": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "蓮根の化身",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "max_mp",
+          "scaling": "level",
+          "multiplier": 400
+        }
+      ]
+    },
+    {
+      "name": "今日の気分は…",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.50
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "strength_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "修行中の一休み",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "stat": "all_type_damage_reduction",
+          "value": 0.50,
+          "description": "全属性被ダメージ-50%"
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "damage_reduction": [
+          {
+            "source_type": "strength_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 2
+          },
+          {
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 1
+          }
+        ],
+        "special_rules": {
+          "buff_property_override": {
+            "target_buff": "shadow_armor",
+            "property": "unremovable"
+          }
+        }
+      },
+      "battle_start_effects": [
+        {
+          "buff": "deity",
+          "duration": "infinite",
+          "removable": false
+        }
+      ],
+      "trigger_effects": [
+        {
+          "trigger": "on_action_end",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "lowest_hp_percent_allies_4",
+              "amount_basis": "self_current_mp",
+              "multiplier": 8,
+              "pre_heal_cleanse": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "lowest_hp_percent_allies_4",
+              "buff_id": "resistance_sacred",
+              "name": "抵抗(聖護)",
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "trigger": "on_sacred_buff_removed",
+          "condition": "buff_source_is_self",
+          "effect": "ignore_removal",
+          "probability": 0.50
+        }
+      ],
+      "combat_mechanics": {
+        "fatal_damage_response": {
+          "max_triggers": 2,
+          "effects": [
+            "ignore_damage",
+            "heal_80_percent",
+            {
+              "type": "apply_buff",
+              "buffs": [
+                "shadow_armor_sacred",
+                "shinyou_sacred",
+                "seiren_special"
+              ],
+              "duration": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "作り笑顔",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        },
+        {
+          "stat": "physical_crit_damage_res",
+          "value": 0.65
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          }
+        }
+      }
+    }
+  ]
+}

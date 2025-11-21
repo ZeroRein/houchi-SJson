@@ -1,0 +1,367 @@
+{
+  "character_info": {
+    "id": "gilgamesh_mr",
+    "name": "ギルガメッシュ",
+    "rarity": "MR",
+    "class": "warrior",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "王の裁定",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "random",
+        "count": 8,
+        "priority_condition": {
+          "condition": "target_has_debuff",
+          "debuff_id": "bleed_sin",
+          "negate": true,
+          "description": "流血(罪悪)なしの敵を優先"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "strength",
+            "multiplier": 20
+          },
+          {
+            "source_stat": "max_hp",
+            "multiplier": 0.15
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_skill",
+          "effects": [
+            {
+              "condition": {
+                "self_has_buff": "humanity_special"
+              },
+              "type": "extend_buff_duration",
+              "buff_id": "humanity_special",
+              "amount": 2
+            },
+            {
+              "type": "apply_buff",
+              "target": ["self", "highest_vit_allies_3"],
+              "buffs": [
+                {
+                  "id": "shoko_special",
+                  "name": "曙光",
+                  "duration": 1
+                },
+                {
+                  "id": "blessing_sacred",
+                  "name": "祝福(聖護)",
+                  "duration": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 2
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "divine_judgment_sin",
+              "name": "聖裁(罪悪)",
+              "probability": 1.0,
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "self_and_adjacent",
+              "amount_basis": "self_max_hp",
+              "multiplier": 0.20
+            },
+            {
+              "type": "reduce_debuff_duration",
+              "target": "allies_6",
+              "count": 4,
+              "turns": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "self_and_adjacent",
+              "buffs": [
+                {
+                  "id": "wind_rider_sacred",
+                  "name": "御風(聖護)",
+                  "duration": 2
+                },
+                {
+                  "id": "hikage_special",
+                  "name": "日陰",
+                  "duration": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "破天の一撃",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "random",
+        "count": 6
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "strength",
+            "multiplier": 20
+          },
+          {
+            "source_stat": "max_hp",
+            "multiplier": 0.40
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "crush_sin",
+              "name": "撃砕(罪悪)",
+              "probability": 1.0,
+              "duration": 1
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "seal_sin",
+              "name": "封印(罪悪)",
+              "probability": 1.0,
+              "duration": 1
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.50
+              },
+              "type": "stat_boost_temporary",
+              "stat": "crit_rate",
+              "value": 0.50
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_individual",
+          "effects": [
+            {
+              "condition": {
+                "target_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.30
+              },
+              "type": "hp_cut",
+              "amount_percent": 0.30,
+              "cap": {
+                "basis": "self_max_attack",
+                "multiplier": 5
+              }
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "self_and_adjacent",
+              "amount_basis": "self_max_hp",
+              "multiplier": 0.20
+            },
+            {
+              "type": "reduce_debuff_duration",
+              "target": "allies_6",
+              "count": 4,
+              "turns": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "self_and_adjacent",
+              "buffs": [
+                {
+                  "id": "wind_rider_sacred",
+                  "name": "御風(聖護)",
+                  "duration": 2
+                },
+                {
+                  "id": "hikage_special",
+                  "name": "日陰",
+                  "duration": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "最も完璧な者",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        { "stat": "attack_percent", "value": 0.60 },
+        { "stat": "strength", "scaling": "level", "multiplier": 400 }
+      ]
+    },
+    {
+      "name": "賢王の伝来",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        { "stat": "hp_percent", "value": 0.80 },
+        { "stat": "physical_crit_damage_percent", "value": 0.50 }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "agility_based",
+          "reduction_formula": {
+            "subtrahend_stat": "strength",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "神の血筋",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        { "condition": "in_battle", "stat": "strength_percent", "value": 0.25 }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          { "stat": "barrier_break_physical", "value": 0.05 },
+          { "stat": "barrier_break_magic", "value": 0.05 }
+        ],
+        "damage_reduction": [
+          { "source_type": "agility_based", "subtrahend_stat": "self_strength", "multiplier": 2 },
+          { "source_type": "attack_based", "subtrahend_stat": "self_strength", "multiplier": 1 }
+        ],
+        "special_rules": {
+          "buff_property_override": {
+            "target_buff": "wind_rider_sacred",
+            "property": "unremovable"
+          }
+        }
+      },
+      "battle_start_effects": [
+        { "buff": "divinity_special", "duration": "infinite", "removable": false },
+        { "buff": "humanity_special", "duration": 4 }
+      ],
+      "combat_mechanics": {
+        "on_hit_taken": {
+          "condition": { "damage_taken": ">", "value": 0.10, "source": "self_max_hp" },
+          "effects": [
+             { "type": "cleanse_self", "count": 1 },
+             { "type": "heal_self", "amount_percent": 0.10 }
+          ]
+        },
+        "fatal_damage_response": {
+          "max_triggers": 3,
+          "effects": [
+            "ignore_damage",
+            "cleanse_all_abnormalities",
+            "heal_80_percent",
+            { "type": "extend_buff_duration", "buff_id": "humanity_special", "amount": 2 },
+            { "type": "apply_buff", "buff_id": "shoko_special", "duration": 1, "description": "曙光: 受けるダメージを1に固定" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "孤高たる反逆者",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        { "stat": "vit", "scaling": "level", "multiplier": 300 },
+        { "stat": "status_res_ignore_percent", "value": 1.0 }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": { "subtrahend_stat": "strength", "multiplier": 3 }
+        }
+      },
+      "entry_effects": {
+        "allies": {
+          "target": "self_and_adjacent",
+          "buffs": ["wind_rider_sacred", "hikage_special"],
+          "durations": [2, 1]
+        }
+      },
+      "trigger_effects": [
+        {
+          "trigger": ["self_passive_kill_fail_fatal", "ally_out_of_turn_kill_fail_fatal"],
+          "max_triggers_per_turn": 4,
+          "effects": [
+            { "type": "extend_buff_duration", "buff_id": "humanity_special", "amount": 1 },
+            {
+              "type": "extra_attack",
+              "target": "trigger_source_target",
+              "count": 1,
+              "damage_formula": {
+                "type": "hp_percent_damage",
+                "value": 0.25,
+                "additions": [
+                  { "source_stat": "vit", "multiplier_formula": "humanity_turns * 3", "type": "true_damage" }
+                ]
+              },
+              "pre_hit_effects": [
+                { "type": "apply_debuff", "debuff_id": "bleed_sin", "duration": 2, "probability": 1.0 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

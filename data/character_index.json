@@ -1,0 +1,50 @@
+{
+  "hades_mr": {
+    "name": "ハデス",
+    "file_path": "./characters/MR/hades_data.json",
+    "rarity": "MR",
+    "class": "archer"
+  },
+  "ashura_mr": {
+    "name": "阿修羅",
+    "file_path": "./characters/MR/ashura_data.json",
+    "rarity": "MR",
+    "class": "archer"
+  },
+  "izanami_mr": {
+    "name": "イザナミ",
+    "file_path": "./characters/MR/izanami_data.json",
+    "rarity": "MR",
+    "class": "archer"
+  },
+  "apollo_mr": {
+    "name": "アポロ",
+    "file_path": "./characters/MR/apollo_data.json",
+    "rarity": "MR",
+    "class": "archer"
+  },
+  "bishamonten_mr": {
+    "name": "毘沙門天",
+    "file_path": "./characters/MR/bishamonten_data.json",
+    "rarity": "MR",
+    "class": "warrior"
+  },
+  "gilgamesh_mr": {
+    "name": "ギルガメッシュ",
+    "file_path": "./characters/MR/gilgamesh_data.json",
+    "rarity": "MR",
+    "class": "warrior"
+  },
+  "gonggong_mr": {
+    "name": "共工",
+    "file_path": "./characters/MR/gonggong_data.json",
+    "rarity": "MR",
+    "class": "strategist"
+  },
+  "taiitsushinjin_mr": {
+    "name": "太乙真人",
+    "file_path": "./characters/MR/taiitsushinjin_data.json",
+    "rarity": "MR",
+    "class": "strategist"
+  }
+}

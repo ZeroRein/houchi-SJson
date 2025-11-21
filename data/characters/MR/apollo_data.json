@@ -1,0 +1,328 @@
+{
+    "character_info": {
+      "id": "apollo_mr",
+      "name": "アポロ",
+      "rarity": "MR",
+      "class": "archer",
+      "element": "none"
+    },
+    "active_skills": [
+      {
+        "id": 1,
+        "name": "輝きの黄金色",
+        "type": "active",
+        "unlock_level": 0,
+        "targeting": {
+          "type": "random",
+          "count": 9,
+          "priority_condition": {
+            "condition": "target_has_debuff",
+            "debuff_id": "armor_break_sin",
+            "negate": true,
+            "description": "破甲(罪悪)なしの敵を優先"
+          }
+        },
+        "damage_formula": {
+          "base_percent": 800,
+          "type": "physical",
+          "additions": [
+            {
+              "source_stat": "agility",
+              "multiplier": 16
+            },
+            {
+              "source_stat": "attack",
+              "multiplier": 0.80
+            }
+          ]
+        },
+        "action_flow": [
+          {
+            "phase": "pre_skill",
+            "effects": [
+              {
+                "type": "cleanse_self",
+                "count": 2
+              },
+              {
+                "type": "apply_buff",
+                "target": "self",
+                "buffs": [
+                  "cold_blood_sacred",
+                  "fortune_sacred"
+                ],
+                "duration": 4
+              }
+            ]
+          },
+          {
+            "phase": "pre_hit",
+            "effects": [
+              {
+                "condition": {
+                  "self_stat": "agility",
+                  "operator": ">",
+                  "target_stat": "agility"
+                },
+                "type": "remove_buff",
+                "target": "enemy",
+                "target_buff_types": [
+                  "beneficial",
+                  "sacred"
+                ],
+                "count": 1
+              },
+              {
+                "condition": {
+                  "target_has_debuff": "armor_break"
+                },
+                "type": "apply_debuff",
+                "debuff_id": "divine_judgment_sin",
+                "name": "聖裁(罪悪)",
+                "probability": 1.0,
+                "duration": 2,
+                "else_action": {
+                  "type": "apply_debuff",
+                  "debuff_id": "armor_break_sin",
+                  "name": "破甲(罪悪)",
+                  "probability": 1.0,
+                  "duration": 4
+                }
+              }
+            ]
+          },
+          {
+            "phase": "end_of_skill",
+            "effects": [
+              {
+                "type": "apply_buff",
+                "target": "allies_6",
+                "buff_id": "hazy_moon_sacred",
+                "name": "朧月(聖護)",
+                "duration": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "慕われる身",
+        "type": "active",
+        "unlock_level": 2,
+        "targeting": {
+          "type": "lowest_hp_value",
+          "count": 1,
+          "repeat": 6,
+          "repeat_condition": {
+            "trigger": "on_crit",
+            "max_extra_repeats": 6,
+            "description": "会心発生ごとに回数+1(最大+6)"
+          }
+        },
+        "damage_formula": {
+          "base_percent": 800,
+          "type": "physical",
+          "additions": [
+            {
+              "source_stat": "agility",
+              "multiplier": 10
+            },
+            {
+              "source_stat": "max_attack",
+              "multiplier": 1.0
+            }
+          ]
+        },
+        "action_flow": [
+          {
+            "phase": "pre_hit",
+            "damage_corrections": [
+              {
+                "condition": {
+                  "target_has_debuff": "armor_break",
+                  "negate": true
+                },
+                "special_effect": "ignore_defense_80_percent"
+              }
+            ],
+            "effects": [
+              {
+                "condition": {
+                  "target_has_debuff": "armor_break_sin"
+                },
+                "type": "remove_buff",
+                "target": "enemy",
+                "target_buff_types": [
+                  "beneficial",
+                  "sacred"
+                ],
+                "count": 1
+              }
+            ]
+          },
+          {
+            "phase": "end_of_skill",
+            "effects": [
+              {
+                "type": "apply_buff",
+                "target": "allies_6",
+                "buff_id": "thunder_fire_sacred",
+                "name": "雷火(聖護)",
+                "duration": 4
+              },
+              {
+                "type": "heal_self",
+                "amount_basis": "total_damage_dealt",
+                "multiplier": 0.30
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "passive_skills": [
+      {
+        "name": "キラキラハニーアタック",
+        "type": "passive_stat",
+        "unlock_level": 1,
+        "bonuses": [
+          {
+            "stat": "attack_percent",
+            "value": 0.70
+          },
+          {
+            "stat": "agility",
+            "scaling": "level",
+            "multiplier": 360
+          }
+        ]
+      },
+      {
+        "name": "愛するならば",
+        "type": "passive_resonance",
+        "unlock_level": 3,
+        "bonuses": [
+          {
+            "stat": "hp_percent",
+            "value": 0.60
+          },
+          {
+            "stat": "status_res_ignore_percent",
+            "value": 0.65
+          }
+        ],
+        "mechanics": {
+          "damage_reduction": {
+            "source_damage_type": "intelligence_based",
+            "reduction_formula": {
+              "subtrahend_stat": "agility",
+              "multiplier": 2
+            }
+          }
+        }
+      },
+      {
+        "name": "りんごの呪い",
+        "type": "passive_awakening",
+        "unlock_level": 5,
+        "aura_effects": {
+          "condition": "self_alive",
+          "target": "allies",
+          "damage_reduction": [
+            {
+              "source_type": "intelligence_based",
+              "subtrahend_stat": "self_agility",
+              "multiplier": 2
+            }
+          ],
+          "special_rules": {
+            "buff_property_override": {
+              "target_buff": "fortune_sacred",
+              "property": "unremovable"
+            }
+          }
+        },
+        "battle_start_effects": [
+          {
+            "buff": "deity",
+            "duration": "infinite",
+            "removable": false
+          }
+        ],
+        "turn_start_effects": {
+          "target": [
+            "self",
+            "ally_archers_3"
+          ],
+          "buffs": [
+            {
+              "id": "shadow_sacred",
+              "duration": 2
+            },
+            {
+              "id": "endurance_sacred",
+              "duration": 2
+            }
+          ]
+        },
+        "combat_mechanics": {
+          "on_fatal_damage_dealt": {
+            "effects": [
+              {
+                "type": "cleanse_self",
+                "count": 2
+              },
+              {
+                "type": "heal_self",
+                "amount_percent": 0.50
+              }
+            ]
+          },
+          "fatal_damage_response": {
+            "max_triggers": 3,
+            "effects": [
+              "ignore_damage",
+              "cleanse_all_abnormalities",
+              "heal_80_percent",
+              "restore_barriers_full",
+              {
+                "type": "copy_buffs",
+                "target": "attacker",
+                "target_buff_types": [
+                  "beneficial",
+                  "sacred"
+                ],
+                "probability": 1.0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "ハート奪う矢",
+        "type": "passive_resonance",
+        "unlock_level": 7,
+        "bonuses": [
+          {
+            "stat": "physical_crit_damage_percent",
+            "value": 0.50
+          },
+          {
+            "stat": "hit_rating",
+            "scaling": "level",
+            "multiplier": 400
+          }
+        ],
+        "mechanics": {
+          "damage_reduction": {
+            "source_damage_type": "attack_based",
+            "reduction_formula": {
+              "subtrahend_stat": "agility",
+              "multiplier": 3
+            }
+          }
+        }
+      }
+    ]
+  }
