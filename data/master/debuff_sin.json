@@ -106,6 +106,26 @@
       { "type": "stat_mod", "stat": "damage_reflection", "value": -0.50 }
     ]
   },
+  "kinkin_sin": {
+    "id": "kinkin_sin",
+    "name": "限禁(罪悪)",
+    "description": "全ステータスと会心ダメージが減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": -0.20 },
+      { "type": "stat_mod", "stat": "crit_damage", "value": -2.00 }
+    ]
+  },
+  "divine_judgment_sin": {
+    "id": "divine_judgment_sin",
+    "name": "聖裁(罪悪)",
+    "description": "与ダメージ減少、残りターンに応じて特殊効果無効",
+    "is_removable": true,
+    "effects": [
+      { "type": "damage_dealt_mod", "value": -0.40 },
+      { "type": "disable_passive_effect", "condition": "duration_dependent" }
+    ]
+  },
 
   "//_comment": "=== 2. 防御低下・被ダメージ増加系 ===",
   "armor_break_sin": {
@@ -199,6 +219,23 @@
       { "type": "receive_damage_mod", "value": 0.30 },
       { "type": "prevent_resurrection", "value": true }
     ]
+  },
+  "ashes_sin": {
+    "id": "ashes_sin",
+    "name": "灰燼(罪悪)",
+    "description": "残りターンに応じて燃焼ダメージが増加。被ダメージ増加",
+    "is_removable": true,
+    "effects": [
+      { "type": "receive_damage_mod", "value": 0.20 },
+      { "type": "damage_taken_mod", "damage_type": "burn", "value": 0.50 }
+    ],
+    "mechanics": {
+      "synergy": {
+        "with": "burn_sin",
+        "effect": "increase_dot_damage",
+        "value": 0.50
+      }
+    }
   },
 
   "//_comment": "=== 3. スリップダメージ・特殊効果系 ===",
@@ -309,8 +346,7 @@
       "on_hit_received": {
         "effect": "heal_attacker",
         "formula": "damage_taken",
-        "multiplier": 0.20,
-        "description": "被ダメージの一定割合を攻撃者に回復として還元"
+        "multiplier": 0.20
       }
     }
   },
@@ -343,25 +379,5 @@
         "probability": 1.0
       }
     }
-  },
-  "kinkin_sin": {
-    "id": "kinkin_sin",
-    "name": "限禁(罪悪)",
-    "description": "全ステータスと会心ダメージが減少",
-    "is_removable": true,
-    "effects": [
-      { "type": "stat_mod", "stat": "all_stats_percent", "value": -0.20 },
-      { "type": "stat_mod", "stat": "crit_damage", "value": -2.00 }
-    ]
-  },
-  "divine_judgment_sin": {
-    "id": "divine_judgment_sin",
-    "name": "聖裁(罪悪)",
-    "description": "与ダメージ減少、残りターンに応じて特殊効果無効",
-    "is_removable": true,
-    "effects": [
-      { "type": "damage_dealt_mod", "value": -0.40 },
-      { "type": "disable_passive_effect", "condition": "duration_dependent" }
-    ]
   }
 }

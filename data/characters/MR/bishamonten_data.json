@@ -1,372 +1,372 @@
 {
-    "character_info": {
-      "id": "bishamonten_mr",
-      "name": "毘沙門天",
-      "rarity": "MR",
-      "class": "warrior",
-      "element": "none"
-    },
-    "active_skills": [
-      {
-        "id": 1,
-        "name": "願いの宝塔",
-        "type": "active",
-        "unlock_level": 0,
-        "targeting": {
-          "type": "highest_max_attack",
-          "count": 4,
-          "repeat": 1,
-          "follow_up": {
-            "type": "concentrated",
-            "count": 5,
-            "target": "highest_max_attack"
-          }
-        },
-        "damage_formula": {
-          "base_percent": 1000,
-          "type": "physical",
-          "additions": [
-            {
-              "source_stat": "strength",
-              "multiplier": 20
-            },
-            {
-              "source_stat": "attack",
-              "multiplier": 0.60
-            }
-          ]
-        },
-        "action_flow": [
+  "character_info": {
+    "id": "bishamonten_mr",
+    "name": "毘沙門天",
+    "rarity": "MR",
+    "class": "warrior",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "願いの宝塔",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "highest_max_attack",
+        "count": 4,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 5,
+          "target": "highest_max_attack"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 1000,
+        "type": "physical",
+        "additions": [
           {
-            "phase": "pre_hit",
-            "effects": [
-              {
-                "type": "remove_buff",
-                "probability": 1.0,
-                "target_buff_types": [
-                  "beneficial",
-                  "sacred"
-                ],
-                "count": 99,
-                "detail": "全解除"
-              },
-              {
-                "type": "apply_debuff",
-                "debuff_id": "bleed_sin",
-                "name": "流血(罪悪)",
-                "probability": 1.0,
-                "duration": 2
-              }
-            ]
+            "source_stat": "strength",
+            "multiplier": 20
           },
           {
-            "phase": "on_hit",
-            "effects": [
-              {
-                "condition": {
-                  "self_stat": "hp_percent",
-                  "operator": ">",
-                  "value": 0.50
-                },
-                "type": "stat_boost_temporary",
-                "stat": "crit_rate",
-                "value": 0.50
-              },
-              {
-                "condition": {
-                  "self_stat": "hp_percent",
-                  "operator": "<",
-                  "value": 0.50
-                },
-                "type": "heal_self",
-                "amount_basis": "damage_100_percent"
-              }
-            ]
-          },
-          {
-            "phase": "end_of_skill",
-            "effects": [
-              {
-                "type": "apply_buff",
-                "target": "allies_6",
-                "buff_id": "yonagi_sacred",
-                "name": "夜凪(聖護)",
-                "duration": 4
-              },
-              {
-                "type": "apply_buff",
-                "target": "self",
-                "buff_id": "frenzy_special",
-                "name": "狂乱",
-                "duration": 2
-              }
-            ]
+            "source_stat": "attack",
+            "multiplier": 0.60
           }
         ]
       },
-      {
-        "id": 2,
-        "name": "勝利を導く加護",
-        "type": "active",
-        "unlock_level": 2,
-        "targeting": {
-          "type": "lowest_hp_percent",
-          "count": 4,
-          "repeat": 3
-        },
-        "damage_formula": {
-          "base_percent": 800,
-          "type": "physical",
-          "additions": [
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
             {
-              "source_stat": "attack",
-              "multiplier": 1.0
+              "type": "remove_buff",
+              "probability": 1.0,
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 99,
+              "detail": "全解除"
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 2
             }
           ]
         },
-        "action_flow": [
-          {
-            "phase": "pre_hit",
-            "damage_corrections": [
-              {
-                "condition": {
-                  "self_has_buff": "frenzy_special"
-                },
-                "special_effect": [
-                  "guaranteed_crit",
-                  "guaranteed_hit"
-                ]
+        {
+          "phase": "on_hit",
+          "effects": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.50
               },
-              {
-                "condition": {
-                  "logic": "AND",
-                  "criteria": [
-                    {
-                      "target_stat": "hp_percent",
-                      "operator": "<",
-                      "value": 0.35
-                    },
-                    {
-                      "target_stat": "hp_value",
-                      "operator": "<",
-                      "compare_to": "self_max_attack",
-                      "compare_multiplier": 10
-                    }
-                  ]
-                },
-                "special_effect": "instant_kill"
-              }
-            ]
-          },
-          {
-            "phase": "post_skill",
-            "conditions": {
-              "remaining_enemies": 1
+              "type": "stat_boost_temporary",
+              "stat": "crit_rate",
+              "value": 0.50
             },
-            "extra_action": {
-              "type": "attack",
-              "count": 4,
-              "target": "same_target",
-              "damage_formula_override": {
-                "base_percent": 800,
-                "type": "physical",
-                "additions": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": "<",
+                "value": 0.50
+              },
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "yonagi_sacred",
+              "name": "夜凪(聖護)",
+              "duration": 4
+            },
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buff_id": "frenzy_special",
+              "name": "狂乱",
+              "duration": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "勝利を導く加護",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_hp_percent",
+        "count": 4,
+        "repeat": 3
+      },
+      "damage_formula": {
+        "base_percent": 800,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "attack",
+            "multiplier": 1.0
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_has_buff": "frenzy_special"
+              },
+              "special_effect": [
+                "guaranteed_crit",
+                "guaranteed_hit"
+              ]
+            },
+            {
+              "condition": {
+                "logic": "AND",
+                "criteria": [
                   {
-                    "source_stat": "strength",
-                    "multiplier": 32
+                    "target_stat": "hp_percent",
+                    "operator": "<",
+                    "value": 0.35
                   },
                   {
-                    "source_stat": "attack",
-                    "multiplier": 0.60
+                    "target_stat": "hp_value",
+                    "operator": "<",
+                    "compare_to": "self_max_attack",
+                    "compare_multiplier": 10
                   }
                 ]
               },
-              "post_hit_effects": [
+              "special_effect": "instant_kill"
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target",
+            "damage_formula_override": {
+              "base_percent": 800,
+              "type": "physical",
+              "additions": [
                 {
-                  "type": "apply_debuff",
-                  "debuff_id": "seal_sin",
-                  "name": "封印(罪悪)",
-                  "probability": 1.0,
-                  "duration": 1
+                  "source_stat": "strength",
+                  "multiplier": 32
+                },
+                {
+                  "source_stat": "attack",
+                  "multiplier": 0.60
                 }
               ]
-            }
-          },
-          {
-            "phase": "end_of_skill",
-            "effects": [
+            },
+            "post_hit_effects": [
               {
-                "type": "apply_buff",
-                "target": "allies_6",
-                "buff_id": "torei_sacred",
-                "name": "砥砺(聖護)",
-                "duration": 4
+                "type": "apply_debuff",
+                "debuff_id": "seal_sin",
+                "name": "封印(罪悪)",
+                "probability": 1.0,
+                "duration": 1
               }
             ]
-          }
-        ],
-        "special_properties": {
-          "immortality_during_skill": {
-            "min_hp_percent": 1,
-            "exceptions": [
-              "skill_start_lt_1_percent",
-              "counter_damage"
-            ]
-          }
-        }
-      }
-    ],
-    "passive_skills": [
-      {
-        "name": "神仏霊験",
-        "type": "passive_stat",
-        "unlock_level": 1,
-        "bonuses": [
-          {
-            "stat": "attack_percent",
-            "value": 0.65
-          },
-          {
-            "stat": "strength",
-            "scaling": "level",
-            "multiplier": 360
-          }
-        ]
-      },
-      {
-        "name": "宝塔のお掃除",
-        "type": "passive_resonance",
-        "unlock_level": 3,
-        "bonuses": [
-          {
-            "stat": "hp_percent",
-            "value": 0.65
-          },
-          {
-            "stat": "reflect_resistance",
-            "value": 0.50
-          }
-        ],
-        "mechanics": {
-          "damage_reduction": {
-            "source_damage_type": "intelligence_based",
-            "reduction_formula": {
-              "subtrahend_stat": "strength",
-              "multiplier": 2
-            }
-          }
-        }
-      },
-      {
-        "name": "眠たい神",
-        "type": "passive_awakening",
-        "unlock_level": 5,
-        "bonuses": [
-          {
-            "stat": "all_type_damage_reduction",
-            "value": 0.50,
-            "description": "筋力・敏捷・知力・攻撃力被ダメージ-50%"
-          }
-        ],
-        "aura_effects": {
-          "condition": "self_alive",
-          "target": "allies",
-          "damage_reduction": [
-            {
-              "source_type": "agility_based",
-              "subtrahend_stat": "self_strength",
-              "multiplier": 2
-            }
-          ],
-          "special_rules": {
-            "buff_property_override": {
-              "target_buff": "unman_sacred",
-              "property": "unremovable"
-            }
           }
         },
-        "battle_start_effects": [
-          {
-            "buff": "deity",
-            "duration": "infinite",
-            "removable": false
-          },
-          {
-            "buff": "teikon_sacred",
-            "name": "定魂(聖護)",
-            "duration": 2
-          },
-          {
-            "buff": "jade_wall",
-            "name": "玉壁",
-            "duration": 4
-          }
-        ],
-        "combat_mechanics": {
-          "on_action_end": {
-            "effect": "apply_buff",
-            "buff_id": "tamonto_special",
-            "name": "多聞塔",
-            "duration": 2
-          },
-          "on_fatal_damage_dealt": {
-            "effects": [
-              {
-                "type": "cleanse_self",
-                "count": 2
-              },
-              {
-                "type": "heal_self",
-                "amount_percent": 0.20
-              }
-            ]
-          },
-          "fatal_damage_response": {
-            "max_triggers": 4,
-            "effects": [
-              "ignore_damage",
-              "cleanse_all_abnormalities",
-              "heal_80_percent",
-              {
-                "type": "apply_buff",
-                "buffs": [
-                  "in_fog_special",
-                  "tamonto_special",
-                  "unman_sacred"
-                ],
-                "durations": [
-                  1,
-                  2,
-                  4
-                ]
-              }
-            ]
-          }
-        }
-      },
-      {
-        "name": "ムササビ風船",
-        "type": "passive_resonance",
-        "unlock_level": 7,
-        "bonuses": [
-          {
-            "stat": "physical_crit_damage_res",
-            "value": 0.65
-          },
-          {
-            "stat": "status_res_ignore_percent",
-            "value": 1.0
-          }
-        ],
-        "mechanics": {
-          "damage_reduction": {
-            "source_damage_type": "attack_based",
-            "reduction_formula": {
-              "subtrahend_stat": "strength",
-              "multiplier": 3
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "torei_sacred",
+              "name": "砥砺(聖護)",
+              "duration": 4
             }
+          ]
+        }
+      ],
+      "special_properties": {
+        "immortality_during_skill": {
+          "min_hp_percent": 1,
+          "exceptions": [
+            "skill_start_lt_1_percent",
+            "counter_damage"
+          ]
+        }
+      }
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "神仏霊験",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "strength",
+          "scaling": "level",
+          "multiplier": 360
+        }
+      ]
+    },
+    {
+      "name": "宝塔のお掃除",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "reflect_resistance",
+          "value": 0.50
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "agility_based",
+          "reduction_formula": {
+            "subtrahend_stat": "strength",
+            "multiplier": 2
           }
         }
       }
-    ]
-  }
+    },
+    {
+      "name": "眠たい神",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "stat": "all_type_damage_reduction",
+          "value": 0.50,
+          "description": "筋力・敏捷・知力・攻撃力被ダメージ-50%"
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "damage_reduction": [
+          {
+            "source_type": "agility_based",
+            "subtrahend_stat": "self_strength",
+            "multiplier": 2
+          }
+        ],
+        "special_rules": {
+          "buff_property_override": {
+            "target_buff": "unman_sacred",
+            "property": "unremovable"
+          }
+        }
+      },
+      "battle_start_effects": [
+        {
+          "buff": "deity",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "teikon_sacred",
+          "name": "定魂(聖護)",
+          "duration": 2
+        },
+        {
+          "buff": "jade_wall_special",
+          "name": "玉壁",
+          "duration": 4
+        }
+      ],
+      "combat_mechanics": {
+        "on_action_end": {
+          "effect": "apply_buff",
+          "buff_id": "tamonto_special",
+          "name": "多聞塔",
+          "duration": 2
+        },
+        "on_fatal_damage_dealt": {
+          "effects": [
+            {
+              "type": "cleanse_self",
+              "count": 2
+            },
+            {
+              "type": "heal_self",
+              "amount_percent": 0.20
+            }
+          ]
+        },
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            "ignore_damage",
+            "cleanse_all_abnormalities",
+            "heal_80_percent",
+            {
+              "type": "apply_buff",
+              "buffs": [
+                "mist_special",
+                "tamonto_special",
+                "unman_sacred"
+              ],
+              "durations": [
+                1,
+                2,
+                4
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ムササビ風船",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "physical_crit_damage_res",
+          "value": 0.65
+        },
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.0
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "strength",
+            "multiplier": 3
+          }
+        }
+      }
+    }
+  ]
+}

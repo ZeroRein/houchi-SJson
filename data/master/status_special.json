@@ -233,6 +233,24 @@
   },
 
   "//_comment": "=== 3. 攻撃・ステータス強化系 ===",
+  "divinity_special": {
+    "id": "divinity_special",
+    "name": "神性",
+    "description": "攻撃力・会心率・耐久力が増加（ギルガメッシュ用）",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+    ]
+  },
+  "humanity_special": {
+    "id": "humanity_special",
+    "name": "人性",
+    "description": "攻撃力増加、被ダメージ軽減（ギルガメッシュ用）",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": 0.30 },
+      { "type": "damage_reduction", "value": 0.30 }
+    ]
+  },
   "lone_force_special": {
     "id": "lone_force_special",
     "name": "孤軍",
@@ -830,6 +848,20 @@
           { "stat": "attack_percent", "base_value": 0.10 },
           { "stat": "all_stats_percent", "base_value": 0.10 },
           { "stat": "status_resistance", "base_value": 0.10 }
+        ]
+      }
+    }
+  },
+  "chingen_special": {
+    "id": "chingen_special",
+    "name": "鎮弦",
+    "description": "ターン数に応じて回避率が減少する代わりに、受けるダメージを軽減する",
+    "mechanics": {
+      "stat_scaling": {
+        "scaling_factor": "duration",
+        "stats": [
+          { "stat": "evasion_percent", "base_value": -0.10, "description": "残りターン数に応じて回避率減少" },
+          { "stat": "damage_reduction", "base_value": 0.10, "description": "残りターン数に応じて被ダメージ軽減" }
         ]
       }
     }

@@ -1,0 +1,456 @@
+{
+  "character_info": {
+    "id": "kagutsuchi_mr",
+    "name": "カグヅチ",
+    "rarity": "MR",
+    "class": "archer",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "火神の怒り",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "random",
+        "count": 6,
+        "repeat": 2
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "agility",
+            "multiplier": 20
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 1.0
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "probability": 1.0,
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "abhorrent_flame_calamity",
+              "name": "忌炎(災厄)",
+              "probability": 1.0,
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "effects": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": "<",
+                "value": 0.50
+              },
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "flame_shield_sacred",
+              "name": "炎盾(聖護)",
+              "duration": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "不滅の災火",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_stat_vit",
+        "count": 1,
+        "repeat": 6,
+        "repeat_condition": {
+          "trigger": "on_crit",
+          "max_extra_repeats": 6,
+          "description": "会心発生ごとに回数+1(最大+6)"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": []
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.50
+              },
+              "special_effect": "guaranteed_crit"
+            },
+            {
+              "condition": {
+                "self_stat": "max_hp",
+                "operator": ">",
+                "target_stat": "hp_value"
+              },
+              "special_effect": "guaranteed_hit"
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "effects": [
+            {
+              "condition": {
+                "is_crit": true
+              },
+              "type": "apply_debuff",
+              "debuff_id": "burn_sin",
+              "name": "燃焼(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "flame_shield_sacred",
+              "name": "炎盾(聖護)",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "special_properties": {
+        "immortality_during_skill": {
+          "min_hp_percent": 1,
+          "exceptions": [
+            "skill_start_lt_1_percent",
+            "counter_damage"
+          ]
+        }
+      }
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "神鎧の加護",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "agility",
+          "scaling": "level",
+          "multiplier": 400
+        }
+      ]
+    },
+    {
+      "name": "灼熱の胴体",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.50
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "intelligence_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "十拳剣",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          {
+            "stat": "primary_stat_percent",
+            "value": 0.10
+          }
+        ],
+        "damage_reduction": [
+          {
+            "source_type": "intelligence_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 2
+          },
+          {
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 1
+          }
+        ],
+        "special_rules": {
+          "buff_property_override": {
+            "target_buff": "extinction_sacred",
+            "target_scope": "ally",
+            "property": "unremovable"
+          },
+          "debuff_property_override": {
+            "target_debuff": "burn_sin",
+            "target_scope": "enemy",
+            "property": "unremovable"
+          }
+        }
+      },
+      "battle_start_effects": [
+        {
+          "buff": "flame_shield_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "shadow_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "deity_special",
+          "duration": "infinite",
+          "removable": false
+        }
+      ],
+      "combat_mechanics": {
+        "on_skill_start": {
+          "condition": {
+            "target_has_debuff": "ashes_sin"
+          },
+          "effects": [
+            {
+              "type": "extend_debuff_duration",
+              "target": "enemy",
+              "target_debuff_types": [
+                "dot_damage"
+              ],
+              "exclude_ids": [
+                "cursed_hold_sin",
+                "cursed_restriction_sin",
+                "control_restriction"
+              ],
+              "amount": 1,
+              "max_duration": 4
+            }
+          ],
+          "else_action": {
+            "type": "apply_debuff",
+            "debuff_id": "ashes_sin",
+            "name": "灰燼(罪悪)",
+            "probability": 1.0,
+            "duration": 2
+          }
+        },
+        "trigger_effects": [
+          {
+            "trigger": "on_sacred_buff_removed",
+            "condition": "buff_id_in_list",
+            "buff_ids": [
+              "flame_shield_sacred",
+              "scald_sin",
+              "ashes_sin"
+            ],
+            "effect": "ignore_removal",
+            "probability": 0.50
+          }
+        ],
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            "ignore_damage",
+            "cleanse_all_abnormalities",
+            "heal_80_percent",
+            {
+              "type": "apply_buff",
+              "buff_id": "extinction_sacred",
+              "duration": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "天地壊滅",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        },
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.0
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
+          }
+        }
+      },
+      "entry_effects": {
+        "enemies": {
+          "target": "all_6",
+          "debuffs": [
+            "ashes_sin"
+          ],
+          "duration": 2,
+          "probability": 1.0
+        }
+      },
+      "trigger_effects": [
+        {
+          "trigger": "on_ally_attack_hit",
+          "condition": {
+            "target_has_debuff": "burn_sin",
+            "debuff_duration": 3
+          },
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buff_id": "fire_seed_special",
+              "name": "火種",
+              "duration": 1
+            }
+          ]
+        },
+        {
+          "trigger": "ally_active_skill_fatal_damage",
+          "max_triggers_per_turn": 1,
+          "effects": [
+            {
+              "type": "extra_attack",
+              "target": "highest_hp_percent_enemies_4",
+              "damage_formula": {
+                "type": "true_damage",
+                "source_stat": "agility",
+                "multiplier": 20
+              },
+              "hit_corrections": [
+                {
+                  "condition": {
+                    "self_stat": "hp_percent",
+                    "operator": ">",
+                    "value": 0.50
+                  },
+                  "special_effect": "guaranteed_crit"
+                },
+                {
+                  "condition": {
+                    "self_stat": "max_hp",
+                    "operator": ">",
+                    "target_stat": "hp_value"
+                  },
+                  "special_effect": "guaranteed_hit"
+                }
+              ],
+              "on_hit_effects": [
+                {
+                  "condition": {
+                    "is_crit": true
+                  },
+                  "type": "apply_debuff",
+                  "debuff_id": "burn_sin",
+                  "duration": 4,
+                  "probability": 1.0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,471 @@
+{
+  "character_info": {
+    "id": "izanami_mr",
+    "name": "イザナミ",
+    "rarity": "MR",
+    "class": "archer",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "黄泉の花",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "highest_max_attack",
+        "count": 4,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 7,
+          "target": "highest_max_attack"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 1000,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "agility",
+            "multiplier": 14
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "probability": 1.0,
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 99,
+              "detail": "全解除"
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "yumei_calamity",
+              "name": "幽冥(災厄)",
+              "probability": 0.50,
+              "duration": 4
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "kinkin_sin",
+              "name": "限禁(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "agility",
+                "operator": ">",
+                "target_stat": "agility"
+              },
+              "special_effect": "guaranteed_crit"
+            },
+            {
+              "condition": {
+                "target_has_debuff": "abhorrent_flame_calamity"
+              },
+              "effect": "extend_debuff_duration",
+              "debuff_id": "abhorrent_flame_calamity",
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_individual",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "burn_sin",
+              "name": "燃焼(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "extinction_sacred",
+              "name": "滅勢(聖護)",
+              "duration": 2
+            }
+          ]
+        }
+      ],
+      "special_properties": {
+        "immortality_during_skill": {
+          "min_hp_percent": 1,
+          "exceptions": [
+            "skill_start_lt_1_percent",
+            "counter_damage"
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "name": "心焼く冥火",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_hp_percent",
+        "count": 4,
+        "repeat": 3
+      },
+      "damage_formula": {
+        "base_percent": 1000,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "max_attack",
+            "multiplier": 0.60
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "abhorrent_flame_calamity",
+              "name": "忌炎(災厄)",
+              "probability": 1.0,
+              "duration": 2
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "armor_break_sin",
+              "name": "破甲(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_has_debuff": "armor_break_sin",
+                "negate": true
+              },
+              "special_effect": "ignore_defense_80_percent"
+            },
+            {
+              "condition": {
+                "self_stat": "agility",
+                "operator": ">",
+                "target_stat": "agility"
+              },
+              "special_effect": "guaranteed_crit"
+            },
+            {
+              "condition": {
+                "self_stat": "max_hp",
+                "operator": ">",
+                "target_stat": "hp_value"
+              },
+              "special_effect": "guaranteed_hit"
+            },
+            {
+              "condition": {
+                "target_has_debuff": "burn_sin"
+              },
+              "effect": "extend_debuff_duration",
+              "debuff_id": "burn_sin",
+              "amount": 1
+            },
+            {
+              "condition": {
+                "logic": "AND",
+                "criteria": [
+                  {
+                    "target_stat": "hp_percent",
+                    "operator": "<",
+                    "value": 0.35
+                  },
+                  {
+                    "target_stat": "hp_value",
+                    "operator": "<=",
+                    "compare_to": "self_max_attack",
+                    "compare_multiplier": 10
+                  }
+                ]
+              },
+              "special_effect": "instant_kill"
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": "<",
+                "value": 0.50
+              },
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            },
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "extinction_sacred",
+              "name": "滅勢(聖護)",
+              "duration": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "幽霊の体",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "agility",
+          "scaling": "level",
+          "multiplier": 360
+        }
+      ]
+    },
+    {
+      "name": "悪霊の仮面",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.75
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "intelligence_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "ヨモツシコメの化身",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          {
+            "stat": "physical_crit_damage_res",
+            "value": 0.15
+          },
+          {
+            "stat": "magic_crit_damage_res",
+            "value": 0.15
+          }
+        ],
+        "damage_reduction": [
+          {
+            "source_type": "intelligence_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 2
+          },
+          {
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 1
+          }
+        ]
+      },
+      "battle_start_effects": [
+        {
+          "buff": "shadow_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "deity_special",
+          "duration": "infinite",
+          "removable": false
+        }
+      ],
+      "special_rules": {
+        "debuff_property_override": {
+          "target_debuff": "burn_sin",
+          "target_scope": "enemy",
+          "property": "unremovable"
+        }
+      },
+      "combat_mechanics": {
+        "on_hit_taken": {
+          "condition": {
+            "damage_taken": ">",
+            "value": 0.10,
+            "source": "self_max_hp"
+          },
+          "effects": [
+            {
+              "type": "apply_buff",
+              "buff_id": "extinction_sacred",
+              "duration": 2,
+              "max_triggers_per_turn": 2
+            }
+          ]
+        },
+        "on_attack_hit": {
+          "condition": {
+            "target_debuff": "burn_sin",
+            "min_duration": 3
+          },
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buff_id": "fire_seed_special",
+              "name": "火種",
+              "duration": 1
+            }
+          ]
+        },
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            "ignore_damage",
+            "heal_100_percent",
+            {
+              "type": "apply_buff",
+              "buff_id": "extinction_sacred",
+              "duration": 4
+            },
+            "restore_barriers_full",
+            {
+              "type": "copy_buffs",
+              "target": "attacker",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "probability": 1.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "女王の威嚇",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "hit_rating",
+          "scaling": "level",
+          "multiplier": 400
+        },
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.0
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
+          }
+        }
+      },
+      "entry_effects": {
+        "self": {
+          "buffs": [
+            "fire_seed_special"
+          ],
+          "duration": 2
+        },
+        "enemies": {
+          "target": "all_6",
+          "debuffs": [
+            "abhorrent_flame_calamity"
+          ],
+          "name": "忌炎(災厄)",
+          "duration": 2,
+          "probability": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -43,7 +43,10 @@
             {
               "type": "copy_buffs",
               "target": "enemies",
-              "target_buff_types": ["beneficial", "sacred"],
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
               "description": "敵の全有益・聖護をコピー"
             }
           ]
@@ -54,13 +57,16 @@
             {
               "type": "remove_buff",
               "target": "enemy",
-              "target_buff_types": ["beneficial", "sacred"],
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
               "count": 99
             },
             {
               "type": "apply_debuff",
-              "debuff_id": "extreme_cold_special",
-              "name": "極寒",
+              "debuff_id": "extreme_cold_calamity",
+              "name": "極寒(災厄)",
               "probability": 0.50,
               "duration": 2
             },
@@ -167,7 +173,7 @@
                 "compare_to": "self_hp_percent"
               },
               "multiplier": 2.0,
-              "note": "原文の'敵の残HP%＜敵'を'敵の残HP%＜自身'と解釈"
+              "note": "敵残HP% < 自身残HP% でダメージ倍"
             }
           ]
         },
@@ -185,7 +191,10 @@
       "special_properties": {
         "immortality_during_skill": {
           "min_hp_percent": 1,
-          "exceptions": ["skill_start_lt_1_percent", "counter_damage"]
+          "exceptions": [
+            "skill_start_lt_1_percent",
+            "counter_damage"
+          ]
         }
       }
     }
@@ -196,8 +205,15 @@
       "type": "passive_stat",
       "unlock_level": 1,
       "bonuses": [
-        { "stat": "attack_percent", "value": 0.70 },
-        { "stat": "intelligence", "scaling": "level", "multiplier": 360 }
+        {
+          "stat": "attack_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "intelligence",
+          "scaling": "level",
+          "multiplier": 360
+        }
       ]
     },
     {
@@ -205,8 +221,14 @@
       "type": "passive_resonance",
       "unlock_level": 3,
       "bonuses": [
-        { "stat": "hp_percent", "value": 0.70 },
-        { "stat": "status_res_percent", "value": 0.50 }
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.50
+        }
       ],
       "mechanics": {
         "damage_reduction": {
@@ -226,23 +248,49 @@
         "condition": "self_alive",
         "target": "allies",
         "bonuses": [
-          { "stat": "magic_crit_damage_percent", "value": 0.20 }
+          {
+            "stat": "magic_crit_damage_percent",
+            "value": 0.20
+          }
         ],
         "damage_reduction": [
-          { "source_type": "strength_based", "subtrahend_stat": "self_intelligence", "multiplier": 2 },
-          { "source_type": "attack_based", "subtrahend_stat": "self_intelligence", "multiplier": 1 }
+          {
+            "source_type": "strength_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 2
+          },
+          {
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 1
+          }
         ]
       },
       "battle_start_effects": [
-        { "buff": "ice_armor_sacred", "duration": "infinite", "removable": false },
-        { "buff": "deity", "duration": "infinite", "removable": false }
+        {
+          "buff": "ice_armor_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "deity_special",
+          "duration": "infinite",
+          "removable": false
+        }
       ],
       "special_rules": {
         "debuff_property_override": {
           "target_debuff": "freeze_sin",
           "properties": [
-            { "type": "stack_duration", "condition": "multi_application", "cap": 2 },
-            { "type": "unremovable", "condition": "duration > 1" }
+            {
+              "type": "stack_duration",
+              "condition": "multi_application",
+              "cap": 2
+            },
+            {
+              "type": "unremovable",
+              "condition": "duration > 1"
+            }
           ]
         }
       },
@@ -255,26 +303,54 @@
               "target": "lowest_stat_vit",
               "count": 1,
               "damage_formula": {
-                 "type": "true_damage",
-                 "source_stat": "intelligence",
-                 "multiplier": 25
+                "type": "true_damage",
+                "source_stat": "intelligence",
+                "multiplier": 25
               },
               "pre_hit_effects": [
-                { "type": "remove_buff", "target": "enemy", "count": 99 },
-                { "type": "apply_debuff", "debuff_id": "tear_sin", "name": "引裂(罪悪)", "duration": 4, "probability": 1.0 }
+                {
+                  "type": "remove_buff",
+                  "target": "enemy",
+                  "count": 99
+                },
+                {
+                  "type": "apply_debuff",
+                  "debuff_id": "tear_sin",
+                  "name": "引裂(罪悪)",
+                  "duration": 4,
+                  "probability": 1.0
+                }
               ],
               "hit_corrections": [
-                { "condition": { "self_stat": "intelligence", "operator": ">", "target_stat": "intelligence" }, "special_effect": "guaranteed_crit" },
-                { "condition": { "self_stat": "max_hp", "operator": ">", "target_stat": "hp_value" }, "special_effect": "guaranteed_hit" }
+                {
+                  "condition": {
+                    "self_stat": "intelligence",
+                    "operator": ">",
+                    "target_stat": "intelligence"
+                  },
+                  "special_effect": "guaranteed_crit"
+                },
+                {
+                  "condition": {
+                    "self_stat": "max_hp",
+                    "operator": ">",
+                    "target_stat": "hp_value"
+                  },
+                  "special_effect": "guaranteed_hit"
+                }
               ],
-              "extra_damage": { "type": "true_damage", "source_stat": "vit", "multiplier": 10 }
+              "extra_damage": {
+                "type": "true_damage",
+                "source_stat": "vit",
+                "multiplier": 10
+              }
             }
           ]
         },
         {
-           "trigger": "on_sacred_buff_removed",
-           "effect": "ignore_removal",
-           "probability": 0.50
+          "trigger": "on_sacred_buff_removed",
+          "effect": "ignore_removal",
+          "probability": 0.50
         }
       ],
       "combat_mechanics": {
@@ -292,39 +368,59 @@
       "type": "passive_resonance",
       "unlock_level": 7,
       "bonuses": [
-        { "stat": "vit", "scaling": "level", "multiplier": 300 },
-        { "stat": "status_res_percent", "value": 1.0 }
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 1.0
+        }
       ],
       "mechanics": {
         "damage_reduction": {
           "source_damage_type": "attack_based",
-          "reduction_formula": { "subtrahend_stat": "intelligence", "multiplier": 3 }
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          }
         }
       },
       "entry_effects": {
         "allies": {
-          "target": ["self", "highest_max_atk_strategists_3"],
-          "buffs": ["sentaku_sacred", "reinou_sacred"],
+          "target": [
+            "self",
+            "highest_max_atk_strategists_3"
+          ],
+          "buffs": [
+            "sentaku_special",
+            "spiritual_power_sacred"
+          ],
           "duration": 4
         }
       },
       "special_rules": {
         "buff_property_override": {
-          "target_buff": "reinou_sacred",
+          "target_buff": "spiritual_power_sacred",
           "property": "unremovable"
         }
       },
       "trigger_effects": [
         {
-           "trigger": "ally_strategist_damage_taken",
-           "condition": { "damage_taken": ">", "value": 0.10, "source": "target_max_hp" },
-           "effect": {
-             "type": "apply_buff_or_extend",
-             "buff_id": "toha_sacred",
-             "name": "踏波(聖護)",
-             "initial_duration": 1,
-             "max_duration": 2
-           }
+          "trigger": "ally_strategist_damage_taken",
+          "condition": {
+            "damage_taken": ">",
+            "value": 0.10,
+            "source": "target_max_hp"
+          },
+          "effect": {
+            "type": "apply_buff_or_extend",
+            "buff_id": "toha_sacred",
+            "name": "踏波(聖護)",
+            "initial_duration": 1,
+            "max_duration": 2
+          }
         }
       ]
     }

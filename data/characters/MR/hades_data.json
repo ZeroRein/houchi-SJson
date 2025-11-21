@@ -1,361 +1,361 @@
 {
-    "character_info": {
-      "id": "hades_mr",
-      "name": "ハデス",
-      "rarity": "MR",
-      "class": "archer",
-      "element": "none"
-    },
-    "active_skills": [
-      {
-        "id": 1,
-        "name": "魂奪の歌",
-        "type": "active",
-        "unlock_level": 0,
-        "targeting": {
-          "type": "lowest_hp_percent",
-          "count": 4,
-          "repeat": 3
-        },
-        "damage_formula": {
-          "base_percent": 900,
-          "type": "physical",
-          "additions": [
-            {
-              "source_stat": "agility",
-              "multiplier": 12
-            },
-            {
-              "source_stat": "attack",
-              "multiplier": 1.0
-            }
-          ]
-        },
-        "action_flow": [
+  "character_info": {
+    "id": "hades_mr",
+    "name": "ハデス",
+    "rarity": "MR",
+    "class": "archer",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "魂奪の歌",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "lowest_hp_percent",
+        "count": 4,
+        "repeat": 3
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
           {
-            "phase": "pre_hit",
-            "effects": [
-              {
-                "type": "remove_buff",
-                "probability": 1.0,
-                "target_buff_types": [
-                  "beneficial",
-                  "sacred"
-                ],
-                "count": 1
-              },
-              {
-                "type": "apply_debuff",
-                "debuff_id": "armor_break_sin",
-                "probability": 1.0,
-                "duration": 4
-              },
-              {
-                "type": "apply_debuff",
-                "debuff_id": "blind_sin",
-                "probability": 1.0,
-                "duration": 4
-              }
-            ]
+            "source_stat": "agility",
+            "multiplier": 12
           },
           {
-            "phase": "on_hit",
-            "damage_corrections": [
-              {
-                "condition": {
-                  "target_stat": "hp_percent",
-                  "operator": ">",
-                  "value": 0.35
-                },
-                "multiplier": 2.0
-              },
-              {
-                "condition": {
-                  "logic": "AND",
-                  "criteria": [
-                    {
-                      "target_stat": "hp_percent",
-                      "operator": "<",
-                      "value": 0.35
-                    },
-                    {
-                      "target_stat": "hp_value",
-                      "operator": "<=",
-                      "compare_to": "self_max_attack",
-                      "compare_multiplier": 10
-                    }
-                  ]
-                },
-                "special_effect": "instant_kill"
-              }
-            ]
-          },
-          {
-            "phase": "post_skill",
-            "conditions": {
-              "remaining_enemies": 1
-            },
-            "extra_action": {
-              "type": "attack",
-              "count": 4,
-              "target": "same_target"
-            }
-          },
-          {
-            "phase": "end_of_skill",
-            "effects": [
-              {
-                "type": "heal_self",
-                "amount_basis": "total_damage_dealt",
-                "multiplier": 0.35
-              }
-            ]
+            "source_stat": "attack",
+            "multiplier": 1.0
           }
         ]
       },
-      {
-        "id": 2,
-        "name": "冥王の恩恵",
-        "type": "active",
-        "unlock_level": 2,
-        "targeting": {
-          "type": "lowest_stat_vit",
-          "count": 4,
-          "repeat": 1
-        },
-        "damage_formula": {
-          "base_percent": 900,
-          "type": "physical",
-          "additions": [
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
             {
-              "source_stat": "agility",
-              "multiplier": 20
+              "type": "remove_buff",
+              "probability": 1.0,
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
             },
             {
-              "source_stat": "max_attack",
-              "multiplier": 1.0
+              "type": "apply_debuff",
+              "debuff_id": "armor_break_sin",
+              "probability": 1.0,
+              "duration": 4
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "blind_sin",
+              "probability": 1.0,
+              "duration": 4
             }
           ]
         },
-        "action_flow": [
-          {
-            "phase": "pre_hit",
-            "effects": [
-              {
-                "type": "remove_buff",
-                "probability": 1.0,
-                "target_buff_types": [
-                  "beneficial",
-                  "sacred"
-                ],
-                "count": 1
-              }
-            ]
-          },
-          {
-            "phase": "on_hit",
-            "crit_rate_bonus": {
-              "base": 0.20,
-              "max": 0.40,
-              "scaling_stat": "target_hp_percent",
-              "scaling_direction": "higher_is_better"
+        {
+          "phase": "on_hit",
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.35
+              },
+              "multiplier": 2.0
             },
-            "damage_corrections": [
-              {
-                "condition": {
-                  "target_has_buff": [
-                    "shadow_armor",
-                    "extinction"
-                  ]
-                },
-                "multiplier": 2.0
-              }
-            ]
+            {
+              "condition": {
+                "logic": "AND",
+                "criteria": [
+                  {
+                    "target_stat": "hp_percent",
+                    "operator": "<",
+                    "value": 0.35
+                  },
+                  {
+                    "target_stat": "hp_value",
+                    "operator": "<=",
+                    "compare_to": "self_max_attack",
+                    "compare_multiplier": 10
+                  }
+                ]
+              },
+              "special_effect": "instant_kill"
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_self",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "冥王の恩恵",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_stat_vit",
+        "count": 4,
+        "repeat": 1
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "agility",
+            "multiplier": 20
           },
           {
-            "phase": "post_hit_action",
-            "type": "extra_attack",
-            "count": 7,
-            "targeting": "lowest_stat_vit"
+            "source_stat": "max_attack",
+            "multiplier": 1.0
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "probability": 1.0,
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "crit_rate_bonus": {
+            "base": 0.20,
+            "max": 0.40,
+            "scaling_stat": "target_hp_percent",
+            "scaling_direction": "higher_is_better"
+          },
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_has_buff": [
+                  "shadow_armor_sacred",
+                  "extinction_sacred"
+                ]
+              },
+              "multiplier": 2.0
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_action",
+          "type": "extra_attack",
+          "count": 7,
+          "targeting": "lowest_stat_vit"
+        },
+        {
+          "phase": "end_of_skill",
+          "condition": {
+            "self_stat": "hp_percent",
+            "operator": "<",
+            "value": 0.50
+          },
+          "effects": [
+            {
+              "type": "heal_self",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "アビスダイヤモンド",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "agility",
+          "scaling": "level",
+          "multiplier": 360
+        }
+      ]
+    },
+    {
+      "name": "幾万の邪念",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.50
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "intelligence_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "いけ！ケルベロス",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "condition": "in_battle",
+          "stat": "agility_percent",
+          "value": 0.25
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          {
+            "stat": "agility_percent",
+            "value": 0.15
+          }
+        ],
+        "damage_reduction": [
+          {
+            "source_type": "intelligence_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 2
           },
           {
-            "phase": "end_of_skill",
-            "condition": {
-              "self_stat": "hp_percent",
-              "operator": "<",
-              "value": 0.50
-            },
-            "effects": [
-              {
-                "type": "heal_self",
-                "amount_basis": "total_damage_dealt",
-                "multiplier": 1.0
-              }
-            ]
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_agility",
+            "multiplier": 1
+          }
+        ]
+      },
+      "battle_start_effects": [
+        {
+          "buff": "cold_blood_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "wind_rider_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "deity_special",
+          "duration": "infinite"
+        }
+      ],
+      "turn_start_effects": {
+        "target": [
+          "self",
+          "ally_archers_3"
+        ],
+        "heal": {
+          "basis": "self_max_hp",
+          "multiplier": 0.10
+        },
+        "cleanse": {
+          "count": 1
+        },
+        "buffs": [
+          {
+            "id": "shadow_sacred",
+            "duration": 2
+          },
+          {
+            "id": "endurance_sacred",
+            "duration": 2,
+            "removable": false
           }
         ]
       }
-    ],
-    "passive_skills": [
-      {
-        "name": "アビスダイヤモンド",
-        "type": "passive_stat",
-        "unlock_level": 1,
-        "bonuses": [
-          {
-            "stat": "attack_percent",
-            "value": 0.70
-          },
-          {
-            "stat": "agility",
-            "scaling": "level",
-            "multiplier": 360
-          }
-        ]
-      },
-      {
-        "name": "幾万の邪念",
-        "type": "passive_resonance",
-        "unlock_level": 3,
-        "bonuses": [
-          {
-            "stat": "hp_percent",
-            "value": 0.70
-          },
-          {
-            "stat": "status_res_percent",
-            "value": 0.50
-          }
-        ],
-        "mechanics": {
-          "damage_reduction": {
-            "source_damage_type": "intelligence_based",
-            "reduction_formula": {
-              "subtrahend_stat": "agility",
-              "multiplier": 3
-            }
+    },
+    {
+      "name": "幽冥の瞳",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        },
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.0
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "agility",
+            "multiplier": 3
           }
         }
       },
-      {
-        "name": "いけ！ケルベロス",
-        "type": "passive_awakening",
-        "unlock_level": 5,
-        "bonuses": [
-          {
-            "condition": "in_battle",
-            "stat": "agility_percent",
-            "value": 0.25
-          }
-        ],
-        "aura_effects": {
-          "condition": "self_alive",
-          "target": "allies",
-          "bonuses": [
-            {
-              "stat": "agility_percent",
-              "value": 0.15
-            }
-          ],
-          "damage_reduction": [
-            {
-              "source_type": "intelligence_based",
-              "subtrahend_stat": "self_agility",
-              "multiplier": 2
-            },
-            {
-              "source_type": "attack_based",
-              "subtrahend_stat": "self_agility",
-              "multiplier": 1
-            }
-          ]
-        },
-        "battle_start_effects": [
-          {
-            "buff": "cold_blood_sacred",
-            "duration": "infinite",
-            "removable": false
-          },
-          {
-            "buff": "wind_rider_sacred",
-            "duration": "infinite",
-            "removable": false
-          },
-          {
-            "buff": "deity",
-            "duration": "infinite"
-          }
-        ],
-        "turn_start_effects": {
+      "entry_effects": {
+        "allies": {
           "target": [
             "self",
-            "ally_archers_3"
+            "max_atk_archers_3"
           ],
-          "heal": {
-            "basis": "self_max_hp",
-            "multiplier": 0.10
-          },
-          "cleanse": {
-            "count": 1
-          },
           "buffs": [
-            {
-              "id": "shadow_sacred",
-              "duration": 2
-            },
-            {
-              "id": "endurance_sacred",
-              "duration": 2,
-              "removable": false
-            }
-          ]
-        }
-      },
-      {
-        "name": "幽冥の瞳",
-        "type": "passive_resonance",
-        "unlock_level": 7,
-        "bonuses": [
-          {
-            "stat": "vit",
-            "scaling": "level",
-            "multiplier": 300
-          },
-          {
-            "stat": "status_res_ignore_percent",
-            "value": 1.0
-          }
-        ],
-        "mechanics": {
-          "damage_reduction": {
-            "source_damage_type": "attack_based",
-            "reduction_formula": {
-              "subtrahend_stat": "agility",
-              "multiplier": 3
-            }
-          }
+            "flower_words_sacred",
+            "extinction_sacred"
+          ],
+          "duration": 4
         },
-        "entry_effects": {
-          "allies": {
-            "target": [
-              "self",
-              "max_atk_archers_3"
-            ],
-            "buffs": [
-              "flower_words_sacred",
-              "extinction_sacred"
-            ],
-            "duration": 4
-          },
-          "enemies": {
-            "target": "max_atk_enemy_2",
-            "debuffs": [
-              "weakness_sin"
-            ],
-            "duration": 4,
-            "probability": 1.0
-          }
+        "enemies": {
+          "target": "max_atk_enemy_2",
+          "debuffs": [
+            "weakness_sin"
+          ],
+          "duration": 4,
+          "probability": 1.0
         }
       }
-    ]
-  }
+    }
+  ]
+}

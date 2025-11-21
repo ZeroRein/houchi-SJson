@@ -46,5 +46,23 @@
     "file_path": "./characters/MR/taiitsushinjin_data.json",
     "rarity": "MR",
     "class": "strategist"
+  },
+  "kagutsuchi_mr": {
+    "name": "カグヅチ",
+    "file_path": "./characters/MR/kagutsuchi_data.json",
+    "rarity": "MR",
+    "class": "archer"
+  },
+  "arthur_mr": {
+    "name": "アーサー王",
+    "file_path": "./characters/MR/arthur_data.json",
+    "rarity": "MR",
+    "class": "warrior"
+  },
+  "merlin_mr": {
+    "name": "マーリン",
+    "file_path": "./characters/MR/merlin_data.json",
+    "rarity": "MR",
+    "class": "strategist"
   }
 }

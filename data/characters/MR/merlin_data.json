@@ -1,0 +1,398 @@
+{
+  "character_info": {
+    "id": "merlin_mr",
+    "name": "マーリン",
+    "rarity": "MR",
+    "class": "strategist",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "月夢封魂",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "highest_hp_percent",
+        "count": 4,
+        "repeat": 3
+      },
+      "damage_formula": {
+        "base_percent": 800,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 8
+          }
+        ],
+        "scaling": {
+          "condition": "fewer_targets_hit",
+          "min_percent": 800,
+          "max_percent": 2000,
+          "min_stat_multiplier": 8,
+          "max_stat_multiplier": 20,
+          "description": "攻撃人数が少ないほどダメージ増加"
+        }
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_has_debuff": "soul_seal_calamity"
+              },
+              "special_effect": "guaranteed_crit"
+            }
+          ],
+          "effects": [
+            {
+              "condition": {
+                "self_stat": "intelligence",
+                "operator": ">",
+                "target_stat": "intelligence"
+              },
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1
+            },
+            {
+              "condition": {
+                "self_stat": "intelligence",
+                "operator": ">",
+                "target_stat": "intelligence"
+              },
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_individual",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "soul_seal_calamity",
+              "name": "封魂(災厄)",
+              "probability": 1.0,
+              "duration": 6
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "reiou_sacred",
+              "name": "霊応(聖護)",
+              "duration": 4
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "shadow_armor_sacred",
+              "name": "影甲(聖護)",
+              "duration": 2,
+              "shield_mechanics": {
+                "basis": "self_current_mp",
+                "multiplier": 12,
+                "damage_reduction_min": 0.30,
+                "damage_reduction_max": 0.60,
+                "scaling_stat": "self_hp_percent",
+                "scaling_direction": "lower_is_better"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "絡みつく悪夢",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "random",
+        "count": 6,
+        "repeat": 2
+      },
+      "damage_formula": {
+        "base_percent": 800,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 10
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.80
+          }
+        ],
+        "scaling": {
+          "condition": "fewer_enemies_alive",
+          "min_percent": 800,
+          "max_percent": 1600,
+          "min_stat_multiplier_int": 10,
+          "max_stat_multiplier_int": 20,
+          "min_stat_multiplier_atk": 0.80,
+          "max_stat_multiplier_atk": 1.60,
+          "description": "敵生存者が少ないほどダメージ増加"
+        }
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "wind_breach_sin",
+              "name": "風破(罪悪)",
+              "probability": 1.0,
+              "duration": 3,
+              "effects": {
+                "damage_taken_up": 0.50
+              }
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "intelligence",
+                "operator": ">",
+                "target_stat": "intelligence"
+              },
+              "special_effect": "ignore_status_res_100"
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_individual",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 3
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "seal_sin",
+              "name": "封印(罪悪)",
+              "probability": 0.35,
+              "probability_override": {
+                "condition": "target_has_debuff_soul_seal",
+                "value": 1.0
+              },
+              "duration": 2,
+              "damage_formula_override": {
+                "description": "知力×36のHP減少",
+                "source_stat": "intelligence",
+                "multiplier": 36
+              }
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "kiki_sacred",
+              "name": "奇羈(聖護)",
+              "duration": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "神に近い聖域",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "hit_rating",
+          "scaling": "level",
+          "multiplier": 380
+        }
+      ]
+    },
+    {
+      "name": "永生の秘術",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.80
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "strength_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 2
+          },
+          "max_reduction": 0.90
+        }
+      }
+    },
+    {
+      "name": "法神觉醒",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "damage_reduction": [
+          {
+            "source_type": "strength_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 2
+          }
+        ]
+      },
+      "battle_start_effects": [
+        {
+          "buff": "jade_wall_special",
+          "name": "玉壁",
+          "duration": 4
+        },
+        {
+          "buff": "magical_god_special",
+          "name": "法神",
+          "duration": 6,
+          "effects": {
+            "intelligence_percent": { "min": 0.25, "max": 0.70 },
+            "damage_reduction": { "min": 0.25, "max": 0.70 }
+          }
+        }
+      ],
+      "special_rules": {
+        "buff_property_override": {
+          "target_buffs": ["shadow_armor_sacred", "blood_oath_sacred"],
+          "target_scope": "ally",
+          "condition": "self_has_buff_magical_god",
+          "property": "unremovable"
+        }
+      },
+      "combat_mechanics": {
+        "on_hit_taken": {
+          "condition": {
+            "damage_taken": ">",
+            "value": 0.10,
+            "source": "self_max_hp"
+          },
+          "max_triggers_per_turn": 2,
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buff_id": "shadow_armor_sacred",
+              "name": "影甲(聖護)",
+              "duration": 2,
+              "shield_mechanics": {
+                "basis": "self_current_mp",
+                "multiplier": 8,
+                "damage_reduction_min": 0.30,
+                "damage_reduction_max": 0.60,
+                "scaling_stat": "self_hp_percent",
+                "scaling_direction": "lower_is_better"
+              }
+            }
+          ]
+        },
+        "on_fatal_damage_dealt": {
+          "effects": [
+            {
+              "type": "extend_buff_duration",
+              "buff_id": "magical_god_special",
+              "amount": 2
+            }
+          ]
+        },
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            {
+              "type": "reduce_buff_duration",
+              "buff_id": "magical_god_special",
+              "amount": 1,
+              "min_remaining": 1
+            },
+            "ignore_damage",
+            "cleanse_all_abnormalities",
+            {
+              "type": "heal",
+              "percent": 0.40
+            },
+            {
+              "type": "apply_buff",
+              "buff_id": "mist_special",
+              "duration": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "永劫のアヴァロン",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "intelligence",
+          "scaling": "level",
+          "multiplier": 360
+        },
+        {
+          "stat": "defense_penetration",
+          "scaling": "level",
+          "multiplier": 15
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          },
+          "max_reduction": 0.90
+        }
+      }
+    }
+  ]
+}

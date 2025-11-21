@@ -110,7 +110,7 @@
                   "duration": 2
                 },
                 {
-                  "id": "hikage_special",
+                  "id": "shade_special",
                   "name": "日陰",
                   "duration": 1
                 }
@@ -229,7 +229,7 @@
                   "duration": 2
                 },
                 {
-                  "id": "hikage_special",
+                  "id": "shade_special",
                   "name": "日陰",
                   "duration": 1
                 }
@@ -334,7 +334,7 @@
       "entry_effects": {
         "allies": {
           "target": "self_and_adjacent",
-          "buffs": ["wind_rider_sacred", "hikage_special"],
+          "buffs": ["wind_rider_sacred", "shade_special"],
           "durations": [2, 1]
         }
       },

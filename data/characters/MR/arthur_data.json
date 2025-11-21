@@ -1,0 +1,314 @@
+{
+  "character_info": {
+    "id": "arthur_mr",
+    "name": "アーサー王",
+    "rarity": "MR",
+    "class": "warrior",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "聖剣覚醒",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "random",
+        "count": 6,
+        "repeat": 2
+      },
+      "damage_formula": {
+        "base_percent": 800,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "max_hp",
+            "multiplier": 0.20,
+            "scaling": {
+               "condition": "fewer_enemies",
+               "max_multiplier": 0.40
+            }
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "reduce_debuff_duration",
+              "target": "allies_6",
+              "count": 4,
+              "turns": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "steel_strength_sacred",
+              "name": "鋼力(聖護)",
+              "duration": 4
+            },
+            {
+              "type": "apply_buff",
+              "target": "highest_stat_intelligence_allies_2",
+              "buffs": [
+                "inspire_sacred",
+                "heaven_gift_sacred"
+              ],
+              "duration": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "栄光の冠",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_hp_percent",
+        "count": 4,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 5,
+          "target": "lowest_hp_percent"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 800,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "max_hp",
+            "multiplier": 0.30
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "crush_sin",
+              "name": "撃砕(罪悪)",
+              "probability": 1.0,
+              "duration": 2
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": "<",
+                "target_stat": "hp_percent"
+              },
+              "special_effect": "heal_100_percent_damage"
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "reduce_debuff_duration",
+              "target": "allies_6",
+              "count": 4,
+              "turns": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "yonagi_sacred",
+              "name": "夜凪(聖護)",
+              "duration": 4
+            },
+            {
+              "type": "apply_buff",
+              "target": "lowest_hp_percent_allies_4",
+              "buff_id": "blood_oath_sacred",
+              "name": "血誓(聖護)",
+              "duration": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "眠りし甲冑",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.60
+        },
+        {
+          "stat": "defense",
+          "scaling": "level",
+          "multiplier": 300
+        }
+      ]
+    },
+    {
+      "name": "煌く心臓",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 0.75
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "agility_based",
+          "reduction_formula": {
+            "subtrahend_stat": "strength",
+            "multiplier": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "聖なる守護マント",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 0.65
+        },
+        {
+          "stat": "all_type_damage_reduction",
+          "value": 0.50,
+          "description": "全属性被ダメージ-50%"
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "damage_reduction": [
+          {
+            "source_type": "agility_based",
+            "subtrahend_stat": "self_strength",
+            "multiplier": 2
+          }
+        ]
+      },
+      "battle_start_effects": [
+        {
+          "buff": "resistance_sacred",
+          "name": "抵抗(聖護)",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "taunt_sacred",
+          "name": "嘲弄(聖護)",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "cover_sacred",
+          "name": "援護(聖護)",
+          "duration": "infinite",
+          "removable": false
+        }
+      ],
+      "combat_mechanics": {
+        "on_hit_taken": {
+          "condition": {
+            "damage_taken": ">",
+            "value": 0.10,
+            "source": "self_max_hp"
+          },
+          "effects": [
+            {
+              "type": "cleanse_self",
+              "count": 1
+            },
+            {
+              "type": "heal_self",
+              "amount_percent": 0.10
+            }
+          ]
+        },
+        "fatal_damage_response": {
+          "max_triggers": 2,
+          "effects": [
+            "ignore_damage",
+            {
+              "type": "reduce_debuff_duration",
+              "count": 4,
+              "turns": 4,
+              "target_types": ["debuff", "calamity"]
+            },
+            {
+              "type": "apply_buff",
+              "buffs": ["flower_words_sacred", "blood_oath_sacred"],
+              "duration": 2
+            }
+          ],
+          "description": "自身または隣の味方が致命傷を受けた時に発動"
+        },
+        "resurrection": {
+           "max_triggers": 3,
+           "heal_percent": 0.80
+        }
+      },
+      "turn_start_effects": {
+        "target": "adjacent_allies",
+        "buffs": [
+           { "id": "mist_sacred", "count": 2 },
+           { "id": "resistance_sacred", "count": 4 } 
+        ],
+        "duration": 2
+      }
+    },
+    {
+      "name": "血飢の呪い",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        },
+        {
+          "stat": "physical_crit_damage_res",
+          "value": 0.65
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "strength",
+            "multiplier": 3
+          }
+        }
+      }
+    }
+  ]
+}
