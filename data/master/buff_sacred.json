@@ -281,6 +281,33 @@
       { "type": "resistance_up", "value": 0.50 }
     ]
   },
+  "new_moon_sacred": {
+    "id": "new_moon_sacred",
+    "name": "新月(聖護)",
+    "description": "攻撃を受けるたびに敵の会心発生率を低下させる",
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "effect": "apply_stat_debuff",
+        "stat": "crit_rate",
+        "value": -0.10,
+        "stackable": true
+      }
+    ]
+  },
+  "sonjutsu_sacred": {
+    "id": "sonjutsu_sacred",
+    "name": "存恤(聖護)",
+    "description": "攻撃を受けた時、特定の味方のHPをダメージ量に応じて回復",
+    "counter_effects": [
+      {
+        "trigger": "on_hit_received",
+        "effect": "heal_specific_ally",
+        "heal_basis": "damage_taken",
+        "description": "被ダメージの一定割合分、特定の味方（または自身）を回復"
+      }
+    ]
+  },
 
   "//_comment": "=== 3. 攻撃・ステータス強化系 ===",
   "rage_sacred": {
@@ -314,7 +341,8 @@
         "stats": [
           { "stat": "attack_percent", "base_value": 0.15 },
           { "stat": "crit_rate", "base_value": 0.15 },
-          { "stat": "all_stats_percent", "base_value": 0.10 }
+          { "stat": "all_stats_percent", "base_value": 0.10 },
+          { "stat": "primary_stat_percent", "base_value": 0.0 }
         ]
       }
     }
@@ -376,8 +404,22 @@
     "description": "会心率増加、敵の挑発系効果を無視",
     "effects": [
       { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "target_ignore_taunt", "value": true }
+      { "type": "target_ignore_taunt", "value": true, "description": "挑発・嘲弄などのターゲット誘導を無視して攻撃可能" }
     ]
+  },
+  "haste_sacred": {
+    "id": "haste_sacred",
+    "name": "急攻(聖護)",
+    "description": "会心発生率増加。会心成否で残りターン数が増減",
+    "effects": [
+      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+    ],
+    "mechanics": {
+      "duration_mod": {
+        "on_crit": { "value": 1, "description": "会心発生時、ターン数+1" },
+        "on_non_crit": { "value": -1, "description": "会心未発生時、ターン数-1" }
+      }
+    }
   },
   "heaven_gift_sacred": {
     "id": "heaven_gift_sacred",
@@ -390,6 +432,103 @@
         "ignore_defense": true
       }
     }
+  },
+  "concentration_sacred": {
+    "id": "concentration_sacred",
+    "name": "集中(聖護)",
+    "description": "法術会心ダメージが増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "magic_crit_damage", "value": 0.50 }
+    ]
+  },
+  "shadow_dance_sacred": {
+    "id": "shadow_dance_sacred",
+    "name": "影舞(聖護)",
+    "description": "物理会心ダメージが増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "physical_crit_damage", "value": 0.50 }
+    ]
+  },
+  "ferocity_sacred": {
+    "id": "ferocity_sacred",
+    "name": "猛威(聖護)",
+    "description": "武将・弓将の場合、与ダメ・会心率・物理会心ダメが増加",
+    "mechanics": {
+      "stat_boost": {
+        "condition": "source_class_is_warrior_or_archer",
+        "stats": [
+          { "stat": "damage_dealt", "value": 0.30 },
+          { "stat": "crit_rate", "value": 0.30 },
+          { "stat": "physical_crit_damage", "value": 0.50 }
+        ]
+      }
+    }
+  },
+  "manifestation_sacred": {
+    "id": "manifestation_sacred",
+    "name": "顕聖(聖護)",
+    "description": "物理防御貫通と法術防御貫通が増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "physical_penetration_percent", "value": 0.50 },
+      { "type": "stat_mod", "stat": "magic_penetration_percent", "value": 0.50 }
+    ]
+  },
+  "strong_edge_sacred": {
+    "id": "strong_edge_sacred",
+    "name": "強鋒(聖護)",
+    "description": "非範囲攻撃時、会心率と物理会心ダメージが増加",
+    "mechanics": {
+      "stat_boost": {
+        "condition": "attack_type_is_single_or_random",
+        "stats": [
+          { "stat": "crit_rate", "value": 0.40 },
+          { "stat": "physical_crit_damage", "value": 0.50 }
+        ]
+      }
+    }
+  },
+  "spiritual_power_sacred": {
+    "id": "spiritual_power_sacred",
+    "name": "霊能(聖護)",
+    "description": "非範囲攻撃時、与えるダメージと会心発生率が増加",
+    "mechanics": {
+      "stat_boost": {
+        "condition": "attack_type_is_single_or_random",
+        "stats": [
+          { "stat": "damage_dealt", "value": 0.40 },
+          { "stat": "crit_rate", "value": 0.40 }
+        ]
+      }
+    }
+  },
+  "cloud_full_sacred": {
+    "id": "cloud_full_sacred",
+    "name": "雲満(聖護)",
+    "description": "範囲攻撃時、与えるダメージが増加",
+    "mechanics": {
+      "stat_boost": {
+        "condition": "attack_type_is_aoe",
+        "stats": [
+          { "stat": "damage_dealt", "value": 0.50 }
+        ]
+      }
+    }
+  },
+  "starlight_sacred": {
+    "id": "starlight_sacred",
+    "name": "星芒(聖護)",
+    "description": "与ダメ増。反射・燃焼・封魂・ターン行動前後のダメージも増加",
+    "effects": [
+      { "type": "stat_mod", "stat": "damage_dealt", "value": 0.50 }
+    ],
+    "special_properties": [
+      {
+        "type": "passive_damage_boost",
+        "target_damage_types": ["reflection", "burn", "seal_soul", "turn_action_damage"],
+        "value": 0.50,
+        "description": "反射や状態異常ダメージなどの特殊ダメージも増加させる"
+      }
+    ]
   },
 
   "//_comment": "=== 4. 耐性・特殊効果系 ===",
@@ -452,5 +591,408 @@
     "special_properties": [
       { "type": "damage_conversion", "mode": "nullify_or_heal" }
     ]
+  },
+  "rehabilitation_sacred": {
+    "id": "rehabilitation_sacred",
+    "name": "更生(聖護)",
+    "description": "毎ターン行動開始前、一定量のHPを回復する",
+    "effects": [
+      {
+        "type": "auto_heal",
+        "trigger": "pre_action",
+        "value": "implementation_dependent",
+        "description": "毎ターン行動開始前にHPを回復"
+      }
+    ]
+  },
+  "eight_arrays_sacred": {
+    "id": "eight_arrays_sacred",
+    "name": "八陣(聖護)",
+    "description": "会心攻撃のダメージを無効化。さらに異常状態にならない",
+    "special_properties": [
+      {
+        "type": "damage_negation",
+        "condition": "on_crit_received",
+        "description": "会心攻撃を受けた際、そのダメージを0にする"
+      },
+      {
+        "type": "status_immunity",
+        "target_types": ["negative", "sin"],
+        "description": "デバフ・罪悪状態にならない"
+      }
+    ]
+  },
+
+  "//_comment": "=== 5. 属性依存ダメージ耐性系 (一括定義) ===",
+  "wisdom_sacred": {
+    "id": "wisdom_sacred",
+    "name": "英知(聖護)",
+    "description": "知力依存攻撃および攻撃力依存攻撃のダメージをカット",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.0 },
+        { "dependency": "attack", "multiplier": 1.0 }
+      ]
+    }
+  },
+  "wisdom_class_sacred": {
+    "id": "wisdom_class_sacred",
+    "name": "知類(聖護)",
+    "description": "知力依存攻撃のダメージをカット（知力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "wisdom_thought_sacred": {
+    "id": "wisdom_thought_sacred",
+    "name": "知慮(聖護)",
+    "description": "知力依存攻撃のダメージをカット（知力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "pale_moon_sacred": {
+    "id": "pale_moon_sacred",
+    "name": "薄月(聖護)",
+    "description": "知力依存攻撃のダメージをカット（敏捷1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "morning_moon_sacred": {
+    "id": "morning_moon_sacred",
+    "name": "朝月(聖護)",
+    "description": "知力依存攻撃のダメージをカット（敏捷2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "floating_storm_sacred": {
+    "id": "floating_storm_sacred",
+    "name": "浮嵐(聖護)",
+    "description": "知力依存攻撃のダメージをカット（筋力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "morning_storm_sacred": {
+    "id": "morning_storm_sacred",
+    "name": "朝嵐(聖護)",
+    "description": "知力依存攻撃のダメージをカット（筋力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "frost_sky_sacred": {
+    "id": "frost_sky_sacred",
+    "name": "霜天(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（知力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "blue_sky_sacred": {
+    "id": "blue_sky_sacred",
+    "name": "碧天(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（知力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "blessed_wind_sacred": {
+    "id": "blessed_wind_sacred",
+    "name": "恵風(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（敏捷1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "balmy_wind_sacred": {
+    "id": "balmy_wind_sacred",
+    "name": "薫風(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（敏捷2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "first_calm_sacred": {
+    "id": "first_calm_sacred",
+    "name": "初凪(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（筋力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "frost_calm_sacred": {
+    "id": "frost_calm_sacred",
+    "name": "霜凪(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（筋力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "inspiration_sacred": {
+    "id": "inspiration_sacred",
+    "name": "霊感(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（知力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "spiritual_light_sacred": {
+    "id": "spiritual_light_sacred",
+    "name": "霊光(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（知力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "golden_light_sacred": {
+    "id": "golden_light_sacred",
+    "name": "金光(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（敏捷1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "dawn_light_sacred": {
+    "id": "dawn_light_sacred",
+    "name": "暁光(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（敏捷2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "grind_flat_sacred": {
+    "id": "grind_flat_sacred",
+    "name": "砥平(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（筋力1.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 1.5 }
+      ]
+    }
+  },
+  "grind_straight_sacred": {
+    "id": "grind_straight_sacred",
+    "name": "砥直(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（筋力2.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.0 }
+      ]
+    }
+  },
+  "kiki_strange_sacred": {
+    "id": "kiki_strange_sacred",
+    "name": "奇詭(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（知力3.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 3.0 }
+      ]
+    }
+  },
+  "thunder_echo_sacred": {
+    "id": "thunder_echo_sacred",
+    "name": "雷響(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（敏捷2.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "thunder_drum_sacred": {
+    "id": "thunder_drum_sacred",
+    "name": "雷鼓(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（敏捷3.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 3.0 }
+      ]
+    }
+  },
+  "power_refusal_sacred": {
+    "id": "power_refusal_sacred",
+    "name": "力拒(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（筋力2.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "steel_wall_sacred": {
+    "id": "steel_wall_sacred",
+    "name": "鋼壁(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（筋力3.0倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 3.0 }
+      ]
+    }
+  },
+  "fantasy_sacred": {
+    "id": "fantasy_sacred",
+    "name": "奇想(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（知力2.5倍）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "steel_strength_sacred": {
+    "id": "steel_strength_sacred",
+    "name": "鋼力(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（筋力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 3.5 }
+      ]
+    }
+  },
+  "thunder_fire_resistance_sacred": {
+    "id": "thunder_fire_resistance_sacred",
+    "name": "雷火(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（敏捷依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 3.5 }
+      ]
+    }
+  },
+  "kiki_sacred": {
+    "id": "kiki_sacred",
+    "name": "奇羈(聖護)",
+    "description": "攻撃力依存攻撃のダメージをカット（知力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 3.5 }
+      ]
+    }
+  },
+  "torei_sacred": {
+    "id": "torei_sacred",
+    "name": "砥砺(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（筋力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "morning_sun_sacred": {
+    "id": "morning_sun_sacred",
+    "name": "旭光(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（敏捷依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "reiou_sacred": {
+    "id": "reiou_sacred",
+    "name": "霊応(聖護)",
+    "description": "筋力依存攻撃のダメージをカット（知力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "yonagi_sacred": {
+    "id": "yonagi_sacred",
+    "name": "夜凪(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（筋力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "golden_wind_sacred": {
+    "id": "golden_wind_sacred",
+    "name": "金風(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（敏捷依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "vermilion_sky_sacred": {
+    "id": "vermilion_sky_sacred",
+    "name": "朱天(聖護)",
+    "description": "敏捷依存攻撃のダメージをカット（知力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "blue_storm_sacred": {
+    "id": "blue_storm_sacred",
+    "name": "蒼嵐(聖護)",
+    "description": "知力依存攻撃のダメージをカット（筋力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "strength", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "hazy_moon_sacred": {
+    "id": "hazy_moon_sacred",
+    "name": "朧月(聖護)",
+    "description": "知力依存攻撃のダメージをカット（敏捷依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "agility", "multiplier": 2.5 }
+      ]
+    }
+  },
+  "wisdom_knowledge_sacred": {
+    "id": "wisdom_knowledge_sacred",
+    "name": "知恵(聖護)",
+    "description": "知力依存攻撃のダメージをカット（知力依存）",
+    "mechanics": {
+      "damage_reduction": [
+        { "dependency": "intelligence", "multiplier": 2.5 }
+      ]
+    }
   }
 }

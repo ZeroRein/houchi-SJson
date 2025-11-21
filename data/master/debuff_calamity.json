@@ -1,0 +1,265 @@
+{
+  "//_comment": "=== 災厄デバフ (Calamity Debuffs) ===",
+
+  "drunken_calamity": {
+    "id": "drunken_calamity",
+    "name": "酩酊(災厄)",
+    "description": "残りターン数に応じて攻撃力が減少する",
+    "mechanics": {
+      "stat_scaling": {
+        "scaling_factor": "duration",
+        "stats": [
+          { "stat": "attack_percent", "base_value": -0.10, "description": "ターン数に応じて攻撃力減少" }
+        ]
+      }
+    }
+  },
+  "decline_calamity": {
+    "id": "decline_calamity",
+    "name": "衰微(災厄)",
+    "description": "攻撃力と与える会心ダメージが減少",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": -0.50 },
+      { "type": "stat_mod", "stat": "crit_damage", "value": -0.50 }
+    ]
+  },
+  "retrograde_calamity": {
+    "id": "retrograde_calamity",
+    "name": "逆睹(災厄)",
+    "description": "攻撃力と状態異常耐性が減少",
+    "effects": [
+      { "type": "stat_mod", "stat": "attack_percent", "value": -0.50 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": -0.50 }
+    ]
+  },
+  "piercing_sun_calamity": {
+    "id": "piercing_sun_calamity",
+    "name": "貫日(災厄)",
+    "description": "命中率・耐性低下。ターン数に応じて対付与者のダメ増減。復活時解除不可",
+    "effects": [
+      { "type": "stat_mod", "stat": "hit_rating", "value": -0.50 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": -0.50 }
+    ],
+    "mechanics": {
+      "vs_caster_scaling": {
+        "scaling_factor": "duration",
+        "effects": [
+          { "type": "damage_dealt_mod", "base_value": -0.10 },
+          { "type": "damage_taken_mod", "base_value": 0.10 }
+        ]
+      }
+    },
+    "special_properties": [
+      { "type": "persist_on_resurrection", "value": true }
+    ]
+  },
+  "eternal_darkness_calamity": {
+    "id": "eternal_darkness_calamity",
+    "name": "常闇(災厄)",
+    "description": "耐性低下。行動前後に毒・限禁・束縛を付与",
+    "effects": [
+      { "type": "stat_mod", "stat": "status_resistance", "value": -0.50 }
+    ],
+    "mechanics": {
+      "periodic_effect": [
+        {
+          "trigger": "pre_action",
+          "effect": "apply_random_debuff",
+          "options": ["poison_sin", "kinkin_sin"]
+        },
+        {
+          "trigger": "post_action",
+          "effect": "apply_random_debuff",
+          "options": ["poison_sin", "restrain_sin"]
+        }
+      ]
+    }
+  },
+  "extreme_cold_calamity": {
+    "id": "extreme_cold_calamity",
+    "name": "極寒(災厄)",
+    "description": "凍結・虚弱耐性低下。凍結時、低HPなら必中被弾",
+    "effects": [
+      { "type": "status_resistance_specific", "target_debuffs": ["freeze", "weakness"], "value": -0.50 }
+    ],
+    "mechanics": {
+      "hit_correction_received": {
+        "condition": {
+          "logic": "AND",
+          "criteria": [
+            { "self_has_debuff": "freeze" },
+            { "self_hp_lt_attacker_max_hp": true }
+          ]
+        },
+        "value": "guaranteed_hit"
+      }
+    }
+  },
+  "raging_thunder_calamity": {
+    "id": "raging_thunder_calamity",
+    "name": "怒雷(災厄)",
+    "description": "麻痺・威光耐性低下。麻痺時必中被弾。麻痺付与で延長。復活時解除不可",
+    "effects": [
+      { "type": "status_resistance_specific", "target_debuffs": ["paralysis", "majesty"], "value": -0.50 }
+    ],
+    "mechanics": {
+      "hit_correction_received": {
+        "condition": {
+          "logic": "AND",
+          "criteria": [
+            { "self_has_debuff": "paralysis" },
+            { "self_hp_lt_attacker_max_hp": true }
+          ]
+        },
+        "value": "guaranteed_hit"
+      },
+      "duration_extension": {
+        "trigger": "on_debuff_applied_to_self",
+        "target_debuff": "paralysis",
+        "value": 1
+      }
+    },
+    "special_properties": [
+      { "type": "persist_on_resurrection", "value": true }
+    ]
+  },
+  "abhorrent_flame_calamity": {
+    "id": "abhorrent_flame_calamity",
+    "name": "忌炎(災厄)",
+    "description": "燃焼・火傷耐性低下。燃焼/火傷での致命傷時に渡烏拡散。復活時解除不可",
+    "effects": [
+      { "type": "status_resistance_specific", "target_debuffs": ["burn", "scald"], "value": -0.50 }
+    ],
+    "mechanics": {
+      "on_fatal_damage_received": {
+        "condition": "self_has_debuff_burn_or_scald",
+        "effects": [
+          { "type": "extend_buff_duration", "target_buff": "raven_special", "value": 1 },
+          { "type": "spread_status", "targets": ["raven_special", "scald_sin"], "range": "adjacent_allies" }
+        ]
+      }
+    },
+    "special_properties": [
+      { "type": "persist_on_resurrection", "value": true }
+    ]
+  },
+  "immobilize_calamity": {
+    "id": "immobilize_calamity",
+    "name": "定身(災厄)",
+    "description": "被弾必中、スキル・攻撃不可。「定魂」無視",
+    "effects": [
+      { "type": "hit_correction_received", "value": "guaranteed_hit" },
+      { "type": "action_prohibit", "value": true }
+    ],
+    "special_properties": [
+      { "type": "ignore_buff_immunity", "target_buff": "fixed_soul_sacred" }
+    ]
+  },
+  "assault_calamity": {
+    "id": "assault_calamity",
+    "name": "強襲(災厄)",
+    "description": "武将から集中攻撃される。武将被弾時ペナルティ。ターン経過減少なし",
+    "mechanics": {
+      "aggro_redirection": {
+        "condition": "attacker_is_warrior",
+        "ignore_types": ["concentrated", "death_counter"]
+      },
+      "on_hit_received": {
+        "condition": "attacker_is_warrior",
+        "effects": [
+          { "type": "stat_mod", "stat": "damage_reflection", "value": -0.50 },
+          { "type": "increase_damage_taken", "value": 0.50 }
+        ]
+      },
+      "stat_mod_conditional": {
+        "condition": "self_hp_lt_attacker_max_hp",
+        "stat": "evasion_percent",
+        "value": -0.50
+      }
+    },
+    "special_properties": [
+      { "type": "duration_decay_prevention", "value": true },
+      { "type": "duration_consumption", "trigger": "on_fatal_damage_received", "value": 1 }
+    ]
+  },
+  "soul_seal_calamity": {
+    "id": "soul_seal_calamity",
+    "name": "封魂(災厄)",
+    "description": "HP吸収低下。行動前/攻撃後に大ダメージ。復活後解除不可。ターン経過減少なし",
+    "effects": [
+      { "type": "stat_mod", "stat": "hp_drain", "value": -0.50 }
+    ],
+    "mechanics": {
+      "periodic_damage": {
+        "triggers": ["pre_action", "post_attack"],
+        "formula": "initial_skill_damage",
+        "multiplier": 0.50,
+        "description": "付与時に受けたダメージの50%を受ける"
+      },
+      "duration_consumption": {
+        "trigger": "on_soul_seal_damage",
+        "value": 1
+      }
+    },
+    "special_properties": [
+      { "type": "persist_on_resurrection", "value": true },
+      { "type": "duration_decay_prevention", "value": true }
+    ]
+  },
+  "slight_intoxication_calamity": {
+    "id": "slight_intoxication_calamity",
+    "name": "微醺(災厄)",
+    "description": "HP吸収低下。行動前ダメージ。致命傷付与で「酩酊」付与",
+    "effects": [
+      { "type": "stat_mod", "stat": "hp_drain", "value": -0.50 }
+    ],
+    "mechanics": {
+      "dot_damage": {
+        "trigger": "pre_action",
+        "formula": "caster_max_hp",
+        "multiplier": 0.10
+      },
+      "on_fatal_damage_dealt": {
+        "effect": "apply_debuff_self",
+        "debuff_id": "drunken_calamity",
+        "duration": 1
+      }
+    }
+  },
+  "sickly_body_calamity": {
+    "id": "sickly_body_calamity",
+    "name": "病躯(災厄)",
+    "description": "行動前ダメージ。流血・散漫耐性低下＆解除不可化。ターン経過減少なし",
+    "mechanics": {
+      "dot_damage": {
+        "trigger": "pre_action",
+        "formula": "caster_max_hp",
+        "multiplier": 0.10
+      },
+      "debuff_vulnerability": {
+        "target_debuffs": ["bleed", "distraction"],
+        "resistance_mod": -1.0,
+        "make_unremovable": true
+      }
+    },
+    "special_properties": [
+      { "type": "duration_decay_prevention", "value": true },
+      { "type": "duration_consumption", "trigger": "on_fatal_damage_received", "value": 1 }
+    ]
+  },
+  "yumei_calamity": {
+    "id": "yumei_calamity",
+    "name": "幽冥(災厄)",
+    "description": "全ての異常状態が解除不可になる。致命傷で強制解除",
+    "special_properties": [
+      {
+        "type": "prevent_status_removal",
+        "target_types": ["negative", "sin", "calamity"]
+      },
+      {
+        "type": "force_remove_self",
+        "trigger": "on_fatal_damage_received"
+      }
+    ]
+  }
+}

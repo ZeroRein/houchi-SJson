@@ -1,0 +1,105 @@
+{
+  "//_comment": "=== 特殊パッシブ・メカニクス定義 (Special Passive Mechanics) ===",
+
+  "damage_reduction_conditional": {
+    "id": "damage_reduction_conditional",
+    "name": "ダメージ軽減",
+    "type": "defense",
+    "description": "特定状況下で、受けるダメージを軽減する",
+    "parameters": ["condition", "reduction_value"]
+  },
+  "damage_resistance_specific": {
+    "id": "damage_resistance_specific",
+    "name": "ダメージ耐性",
+    "type": "defense",
+    "description": "特定の攻撃（属性攻撃や範囲攻撃など）の、受けるダメージを大きく軽減する",
+    "parameters": ["target_attack_type", "resistance_value"]
+  },
+  "duration_decay_lock": {
+    "id": "duration_decay_lock",
+    "name": "適応ターン数永続",
+    "type": "persistence",
+    "description": "特定のバフ/デバフ/聖護/罪悪状態が、特定の条件を満たした時、残りターン数が減少しなくなる",
+    "parameters": ["target_status", "condition"]
+  },
+  "status_removal_immunity": {
+    "id": "status_removal_immunity",
+    "name": "解除不可",
+    "type": "persistence",
+    "description": "特定のバフ/デバフ/聖護/罪悪状態に対して、敵の解除系効果を無効化する",
+    "parameters": ["target_status", "probability"]
+  },
+  "resurrection": {
+    "id": "resurrection",
+    "name": "復活",
+    "type": "survival",
+    "description": "戦闘不能時、HPを一定量回復し戦闘を継続する。デバフは解除される（一部除く）",
+    "parameters": ["heal_percent", "max_count", "trigger_effects"]
+  },
+  "fatal_damage_ignore": {
+    "id": "fatal_damage_ignore",
+    "name": "致死無視",
+    "type": "survival",
+    "description": "致死量となるダメージを受けた際、そのダメージを無力化（0にする）し、デバフ或いは罪悪状態を解除し、一定量のHPを回復する。撃破判定にならないためバフは維持される",
+    "parameters": ["heal_percent", "max_count", "cleanse_status_types"]
+  },
+  "linked_attack": {
+    "id": "linked_attack",
+    "name": "連携攻撃",
+    "type": "reaction_offense",
+    "description": "味方行動或いは攻撃終了時、自動且つ強制的に行動する",
+    "parameters": ["trigger_condition", "skill_id_or_action"]
+  },
+  "linked_counter": {
+    "id": "linked_counter",
+    "name": "連携反撃",
+    "type": "reaction_defense",
+    "description": "特定条件下で敵行動或いは攻撃終了時、自動且つ強制的に行動する",
+    "parameters": ["trigger_condition", "skill_id_or_action"]
+  },
+  "death_counter": {
+    "id": "death_counter",
+    "name": "死亡時反撃",
+    "type": "reaction_defense",
+    "description": "自身戦闘不能時、自動且つ強制的に行動する。この行動によりHP回復等が発生した場合、復活処理に移行する場合がある",
+    "parameters": ["skill_id_or_action"]
+  },
+
+  "//_comment": "=== 特殊ステータス・オーラ系 (Special Stats & Auras) ===",
+
+  "damage_reflection_passive": {
+    "id": "damage_reflection_passive",
+    "name": "反射",
+    "type": "counter_passive",
+    "description": "受けたダメージの一定割合を攻撃者に跳ね返す",
+    "parameters": ["reflection_percent"]
+  },
+  "status_resistance_passive": {
+    "id": "status_resistance_passive",
+    "name": "状態異常耐性",
+    "type": "stat_passive",
+    "description": "状態異常耐性を増加させ、敵からの異常状態付与率を減少させる",
+    "parameters": ["resistance_percent"]
+  },
+  "status_resistance_ignore_passive": {
+    "id": "status_resistance_ignore_passive",
+    "name": "状態異常耐性無視",
+    "type": "stat_passive",
+    "description": "敵の状態異常耐性を計算時に永続的に減少（無視）させる",
+    "parameters": ["ignore_percent"]
+  },
+  "captain_boost_passive": {
+    "id": "captain_boost_passive",
+    "name": "主将強化",
+    "type": "support_passive",
+    "description": "主将の能力値と放置戦闘時の経験値・銅貨効率を強化する",
+    "parameters": ["stats_to_boost", "exp_coin_boost_percent"]
+  },
+  "ally_aura_passive": {
+    "id": "ally_aura_passive",
+    "name": "味方強化",
+    "type": "aura_passive",
+    "description": "自身が生存している間、永続的に味方全員のステータスを強化する",
+    "parameters": ["target_stats", "boost_value", "condition"]
+  }
+}

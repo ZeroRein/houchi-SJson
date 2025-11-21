@@ -1,4 +1,5 @@
 {
+  "//_comment": "=== 1. 行動阻害・ステータス低下系 ===",
   "paralysis_sin": {
     "id": "paralysis_sin",
     "name": "麻痺(罪悪)",
@@ -34,6 +35,33 @@
       { "type": "dot_damage", "formula": "caster_primary_stat", "multiplier": 10.0 }
     ]
   },
+  "restrain_sin": {
+    "id": "restrain_sin",
+    "name": "束縛(罪悪)",
+    "description": "与ダメージ減少、会心発生率減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "damage_dealt", "value": -0.30 },
+      { "type": "stat_mod", "stat": "crit_rate", "value": -0.30 }
+    ]
+  },
+  "spring_fatigue_sin": {
+    "id": "spring_fatigue_sin",
+    "name": "春困(罪悪)",
+    "description": "会心ダメージ減少、被会心率増加。隣接に伝染",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "crit_damage", "value": -0.50 },
+      { "type": "stat_mod", "stat": "crit_chance_received", "value": 0.25 }
+    ],
+    "mechanics": {
+      "on_turn_end": {
+        "effect": "spread_status",
+        "target": "adjacent_allies",
+        "status_id": "spring_fatigue_sin"
+      }
+    }
+  },
   "weakness_sin": {
     "id": "weakness_sin",
     "name": "虚弱(罪悪)",
@@ -42,26 +70,6 @@
     "effects": [
       { "type": "stat_mod", "stat": "attack_percent", "value": -0.50 },
       { "type": "damage_dealt_mod", "damage_type": "elemental", "value": -0.50 }
-    ]
-  },
-  "kinkin_sin": {
-    "id": "kinkin_sin",
-    "name": "限禁(罪悪)",
-    "description": "全ステータスと会心ダメージが減少",
-    "is_removable": true,
-    "effects": [
-      { "type": "stat_mod", "stat": "all_stats_percent", "value": -0.20 },
-      { "type": "stat_mod", "stat": "crit_damage", "value": -2.00 }
-    ]
-  },
-  "divine_judgment_sin": {
-    "id": "divine_judgment_sin",
-    "name": "聖裁(罪悪)",
-    "description": "与ダメージ減少、残りターンに応じて特殊効果無効",
-    "is_removable": true,
-    "effects": [
-      { "type": "damage_dealt_mod", "value": -0.40 },
-      { "type": "disable_passive_effect", "condition": "duration_dependent" }
     ]
   },
   "blind_sin": {
@@ -79,6 +87,27 @@
       }
     }
   },
+  "prisoner_sin": {
+    "id": "prisoner_sin",
+    "name": "捕虜(罪悪)",
+    "description": "状態異常耐性低下、「霧中」の効果を無効化",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "status_resistance", "value": -0.50 },
+      { "type": "disable_buff_effect", "target_buff": "mist_sacred" }
+    ]
+  },
+  "confusion_sin": {
+    "id": "confusion_sin",
+    "name": "困惑(罪悪)",
+    "description": "ダメージ反射率が減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "damage_reflection", "value": -0.50 }
+    ]
+  },
+
+  "//_comment": "=== 2. 防御低下・被ダメージ増加系 ===",
   "armor_break_sin": {
     "id": "armor_break_sin",
     "name": "破甲(罪悪)",
@@ -106,16 +135,90 @@
       { "type": "stat_mod", "stat": "crit_damage_received", "value": 0.50 }
     ]
   },
+  "bow_violence_sin": {
+    "id": "bow_violence_sin",
+    "name": "弓暴(罪悪)",
+    "description": "被ダメ増。弓将からの攻撃で被会心率増",
+    "is_removable": true,
+    "effects": [
+      { "type": "receive_damage_mod", "value": 0.20 },
+      { "type": "crit_chance_received_up", "condition": "attacker_is_archer", "value": 0.50 }
+    ]
+  },
+  "wind_breach_sin": {
+    "id": "wind_breach_sin",
+    "name": "風破(罪悪)",
+    "description": "被ダメ増。謀士からの攻撃で被会心率増",
+    "is_removable": true,
+    "effects": [
+      { "type": "receive_damage_mod", "value": 0.20 },
+      { "type": "crit_chance_received_up", "condition": "attacker_is_strategist", "value": 0.50 }
+    ]
+  },
+  "tear_sin": {
+    "id": "tear_sin",
+    "name": "引裂(罪悪)",
+    "description": "非範囲攻撃被弾時、被ダメージが増加（累積）",
+    "is_removable": true,
+    "mechanics": {
+      "on_hit_received": {
+        "condition": "attack_type_is_not_aoe",
+        "effect": "increase_damage_taken",
+        "value": 0.10,
+        "stackable": true,
+        "description": "攻撃/属性ダメージ増加率が累積"
+      }
+    }
+  },
+  "distraction_sin": {
+    "id": "distraction_sin",
+    "name": "散漫(罪悪)",
+    "description": "範囲攻撃被弾時、被会心率増・会心耐性減",
+    "is_removable": true,
+    "effects": [
+      {
+        "condition": "on_aoe_received",
+        "type": "stat_mod",
+        "stat": "crit_chance_received",
+        "value": 0.50
+      },
+      {
+        "condition": "on_aoe_received",
+        "type": "stat_mod",
+        "stat": "crit_damage_resistance",
+        "value": -0.50
+      }
+    ]
+  },
+  "dead_end_sin": {
+    "id": "dead_end_sin",
+    "name": "窮途(罪悪)",
+    "description": "被ダメージ増加、復活不可",
+    "is_removable": true,
+    "effects": [
+      { "type": "receive_damage_mod", "value": 0.30 },
+      { "type": "prevent_resurrection", "value": true }
+    ]
+  },
+
+  "//_comment": "=== 3. スリップダメージ・特殊効果系 ===",
   "poison_sin": {
     "id": "poison_sin",
     "name": "毒(罪悪)",
-    "description": "毎ターンHP3%減少。有益・聖護バフの付与を阻害し、残りターン減少",
+    "description": "毎ターンHP3%減少。バフ付与阻害、ターン短縮。火傷と重複で耐性低下",
     "is_removable": true,
     "effects": [
       { "type": "dot_damage", "val": 0.03 },
       { "type": "prevent_buff_application", "target_types": ["beneficial", "sacred"] },
       { "type": "reduce_duration_on_trigger", "val": 1 }
-    ]
+    ],
+    "mechanics": {
+      "synergy": {
+        "with": "scald_sin",
+        "effect": "reduce_status_resistance",
+        "value": 0.25
+      }
+    }
   },
   "burn_sin": {
     "id": "burn_sin",
@@ -136,6 +239,21 @@
       }
     }
   },
+  "scald_sin": {
+    "id": "scald_sin",
+    "name": "火傷(罪悪)",
+    "description": "毎ターンHP3%減少、状態異常耐性低下。解除時ダメージ",
+    "is_removable": true,
+    "effects": [
+      { "type": "dot_damage", "val": 0.03 },
+      { "type": "stat_mod", "stat": "status_resistance", "value": -0.25 }
+    ],
+    "on_remove": {
+      "effect": "damage",
+      "formula": "duration_based",
+      "description": "残りターン数に応じたダメージ"
+    }
+  },
   "bleed_sin": {
     "id": "bleed_sin",
     "name": "流血(罪悪)",
@@ -145,6 +263,69 @@
       { "type": "heal_block", "value": true },
       { "type": "crit_chance_received_up", "condition": "attacker_is_warrior_or_archer", "value": 0.50 }
     ]
+  },
+  "cursed_restriction_sin": {
+    "id": "cursed_restriction_sin",
+    "name": "呪禁(罪悪)",
+    "description": "被弾時最大HP2%減少。呪持と重複で毎ターン最大HP10%減少",
+    "is_removable": true,
+    "mechanics": {
+      "on_hit_received": {
+        "effect": "hp_loss",
+        "formula": "max_hp",
+        "multiplier": 0.02
+      },
+      "synergy": {
+        "with": "cursed_hold_sin",
+        "effect": "dot_damage_max_hp",
+        "value": 0.10
+      }
+    }
+  },
+  "cursed_hold_sin": {
+    "id": "cursed_hold_sin",
+    "name": "呪持(罪悪)",
+    "description": "被弾時現HP5%減少。呪禁と重複で毎ターン最大HP10%減少",
+    "is_removable": true,
+    "mechanics": {
+      "on_hit_received": {
+        "effect": "hp_loss",
+        "formula": "current_hp",
+        "multiplier": 0.05
+      },
+      "synergy": {
+        "with": "cursed_restriction_sin",
+        "effect": "dot_damage_max_hp",
+        "value": 0.10
+      }
+    }
+  },
+  "pessimism_sin": {
+    "id": "pessimism_sin",
+    "name": "厭世(罪悪)",
+    "description": "被弾時、攻撃者を回復させる",
+    "is_removable": true,
+    "mechanics": {
+      "on_hit_received": {
+        "effect": "heal_attacker",
+        "formula": "damage_taken",
+        "multiplier": 0.20,
+        "description": "被ダメージの一定割合を攻撃者に回復として還元"
+      }
+    }
+  },
+  "firefly_sin": {
+    "id": "firefly_sin",
+    "name": "蛍火(罪悪)",
+    "description": "「蛍火(デバフ)」の解除率が100%になる",
+    "is_removable": true,
+    "mechanics": {
+      "buff_mod": {
+        "target_debuff": "firefly_debuff",
+        "property": "trigger_probability",
+        "value": 1.0
+      }
+    }
   },
   "majesty_sin": {
     "id": "majesty_sin",
@@ -162,5 +343,25 @@
         "probability": 1.0
       }
     }
+  },
+  "kinkin_sin": {
+    "id": "kinkin_sin",
+    "name": "限禁(罪悪)",
+    "description": "全ステータスと会心ダメージが減少",
+    "is_removable": true,
+    "effects": [
+      { "type": "stat_mod", "stat": "all_stats_percent", "value": -0.20 },
+      { "type": "stat_mod", "stat": "crit_damage", "value": -2.00 }
+    ]
+  },
+  "divine_judgment_sin": {
+    "id": "divine_judgment_sin",
+    "name": "聖裁(罪悪)",
+    "description": "与ダメージ減少、残りターンに応じて特殊効果無効",
+    "is_removable": true,
+    "effects": [
+      { "type": "damage_dealt_mod", "value": -0.40 },
+      { "type": "disable_passive_effect", "condition": "duration_dependent" }
+    ]
   }
 }
