@@ -1,11 +1,21 @@
 {
-  "//_comment": "=== 1. ターゲット操作・回避・必中系 ===",
+  "_comment_1": "=== 1. ターゲット操作・回避・必中系 ===",
   "mist_special": {
     "id": "mist_special",
     "name": "霧中",
-    "description": "範囲攻撃と撃破時攻撃以外からターゲットされない",
+    "description": "範囲攻撃と反射以外のダメージを無視（ターゲットされない）",
     "effects": [
-      { "type": "target_restriction", "value": "aoe_only" }
+      {
+        "type": "target_restriction",
+        "value": "aoe_only"
+      },
+      {
+        "type": "damage_immunity",
+        "exclude_types": [
+          "aoe",
+          "reflection"
+        ]
+      }
     ]
   },
   "insight_special": {
@@ -13,7 +23,10 @@
     "name": "慧眼",
     "description": "敵の「霧中」状態を無力化（無視してターゲット可能）",
     "effects": [
-      { "type": "ignore_target_restriction", "target_buff": "mist_special" }
+      {
+        "type": "ignore_target_restriction",
+        "target_buff": "mist_special"
+      }
     ]
   },
   "fire_eyes_special": {
@@ -21,8 +34,15 @@
     "name": "火眼金睛",
     "description": "霧中無視、耐性無視増、HP条件で必中",
     "effects": [
-      { "type": "ignore_target_restriction", "target_buff": "mist_special" },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 1.00 }
+      {
+        "type": "ignore_target_restriction",
+        "target_buff": "mist_special"
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 1.00
+      }
     ],
     "mechanics": {
       "hit_correction": {
@@ -36,56 +56,135 @@
     "name": "狂乱",
     "description": "会心確定、必中、状態異常無効",
     "effects": [
-      { "type": "guaranteed_crit", "value": true },
-      { "type": "guaranteed_hit", "value": true },
-      { "type": "status_immunity", "target_types": ["negative", "control", "sin"] }
+      {
+        "type": "guaranteed_crit",
+        "value": true
+      },
+      {
+        "type": "guaranteed_hit",
+        "value": true
+      },
+      {
+        "type": "status_immunity",
+        "target_types": [
+          "negative",
+          "control",
+          "sin"
+        ]
+      }
     ]
   },
-
-  "//_comment": "=== 2. ダメージ無効・軽減・吸収・特殊防御系 ===",
+  "hyoshin_special": {
+    "id": "hyoshin_special",
+    "name": "氷心",
+    "description": "耐性無視増加。「激怒」状態の敵からの被ダメ減少。「激怒」の敵から狙われやすくなる",
+    "effects": [
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
+    ],
+    "mechanics": {
+      "damage_reduction": {
+        "condition": "attacker_has_status_gekido",
+        "value": 0.50,
+        "description": "激怒状態の敵からのダメージを減少"
+      },
+      "aggro_pull": {
+        "condition": "attacker_has_status_gekido",
+        "value": true,
+        "description": "激怒状態の敵の攻撃を引き付ける"
+      }
+    }
+  },
+  "gekido_special": {
+    "id": "gekido_special",
+    "name": "激怒",
+    "description": "残HPが攻撃者より低いと必中を受ける。氷心の敵を優先攻撃。耐性低下",
+    "effects": [
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": -0.50
+      }
+    ],
+    "mechanics": {
+      "hit_correction_received": {
+        "condition": "self_hp_lt_attacker_max_hp",
+        "value": "guaranteed_hit"
+      },
+      "target_forced": {
+        "target_condition": "has_status_hyoshin",
+        "description": "氷心状態の敵を優先的に攻撃する"
+      }
+    }
+  },
+  "_comment_2": "=== 2. ダメージ無効・軽減・吸収・特殊防御系 ===",
   "ice_thorn_special": {
     "id": "ice_thorn_special",
     "name": "氷棘",
     "description": "確率でダメージ無効化し、攻撃者を凍結させる",
     "mechanics": {
-      "damage_negation": { "condition": "probability", "value": 0.50 }
+      "damage_negation": {
+        "condition": "probability",
+        "value": 0.50
+      }
     },
     "counter_effects": [
-      { "trigger": "on_hit_received", "effect": "apply_debuff", "debuff_id": "freeze_sin" }
+      {
+        "trigger": "on_hit_received",
+        "effect": "apply_debuff",
+        "debuff_id": "freeze_sin"
+      }
     ]
   },
   "jade_wall_special": {
     "id": "jade_wall_special",
     "name": "玉壁",
-    "description": "ダメージを無効化し、ターン数を消費する",
+    "description": "被弾時（反撃除く）にターンを消費してダメージ無効化",
     "special_properties": [
       {
         "type": "damage_negation",
         "cost_type": "reduce_duration",
         "cost_value": 1,
-        "condition": "on_hit_received"
+        "condition": "on_hit_received",
+        "exclude_types": [
+          "counter"
+        ]
       }
     ]
   },
   "shade_special": {
     "id": "shade_special",
     "name": "日陰",
-    "description": "受けるダメージをHP上限の一定割合以下に抑える",
+    "description": "被ダメ>HP上限20%時、1ターン消費して超過分無視。戦闘ターンで減少しない。累積可",
     "mechanics": {
       "damage_cap": {
         "basis": "self_max_hp",
-        "value": 0.50,
+        "value": 0.20,
         "cost_type": "reduce_duration",
-        "cost_value": 1
+        "cost_value": 1,
+        "condition": "damage_gt_threshold"
       }
-    }
+    },
+    "special_properties": [
+      {
+        "type": "duration_decay_prevention",
+        "value": true
+      }
+    ]
   },
   "seigen_special": {
     "id": "seigen_special",
     "name": "清源",
     "description": "状態異常耐性増。麻痺・凍結状態の敵からのダメージ軽減",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
     ],
     "mechanics": {
       "damage_reduction": {
@@ -99,8 +198,15 @@
     "name": "幽影",
     "description": "状態異常耐性が増加し、受けるダメージを軽減",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
-      { "type": "damage_reduction", "value": 0.30 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      },
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      }
     ]
   },
   "yin_yang_special": {
@@ -108,8 +214,68 @@
     "name": "陰陽",
     "description": "受けるダメージを軽減し、状態異常耐性が増加",
     "effects": [
-      { "type": "damage_reduction", "value": 0.30 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
+    ]
+  },
+  "deer_cry_special": {
+    "id": "deer_cry_special",
+    "name": "鹿鳴",
+    "description": "ダメージ軽減、HP吸収と状態異常耐性無視が増加",
+    "effects": [
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "hp_drain",
+        "value": 0.20
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
+    ]
+  },
+  "yoen_special": {
+    "id": "yoen_special",
+    "name": "妖怨",
+    "description": "ダメージ軽減、状態異常耐性無視が増加",
+    "effects": [
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
+    ]
+  },
+  "mechanism_special": {
+    "id": "mechanism_special",
+    "name": "機巧",
+    "description": "ダメージ軽減、状態異常耐性無視が増加",
+    "effects": [
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
     ]
   },
   "shoyo_special": {
@@ -117,12 +283,20 @@
     "name": "照耀",
     "description": "ダメージ軽減。自身への燃焼・火傷の最大ターン数を2に制限",
     "effects": [
-      { "type": "damage_reduction", "value": 0.30 }
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      }
     ],
     "special_properties": [
       {
         "type": "debuff_duration_limit",
-        "target_debuffs": ["burn_sin", "scald_sin", "burn", "scald"],
+        "target_debuffs": [
+          "burn_sin",
+          "scald_sin",
+          "burn",
+          "scald"
+        ],
         "max_duration": 2
       }
     ]
@@ -132,7 +306,10 @@
     "name": "気盾",
     "description": "受けたダメージの一部を特定の相手に反射",
     "mechanics": {
-      "damage_reflection_redirect": { "target": "specific_target", "multiplier": 0.50 }
+      "damage_reflection_redirect": {
+        "target": "specific_target",
+        "multiplier": 0.50
+      }
     }
   },
   "small_tsuren_special": {
@@ -140,7 +317,11 @@
     "name": "小通連",
     "description": "属性ダメージ（攻撃・筋力・敏捷・知力）を軽減",
     "effects": [
-      { "type": "damage_taken_mod", "damage_type": "elemental", "value": -0.50 }
+      {
+        "type": "damage_taken_mod",
+        "damage_type": "elemental",
+        "value": -0.50
+      }
     ]
   },
   "wave_break_special": {
@@ -148,7 +329,11 @@
     "name": "破浪",
     "description": "会心攻撃を受ける確率が減少",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_chance_received", "value": -0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_chance_received",
+        "value": -0.50
+      }
     ]
   },
   "clever_fake_special": {
@@ -156,10 +341,17 @@
     "name": "巧偽",
     "description": "被会心率増加だが、会心ダメージを無視",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_chance_received", "value": 1.00 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_chance_received",
+        "value": 1.00
+      }
     ],
     "special_properties": [
-      { "type": "ignore_crit_damage", "value": true }
+      {
+        "type": "ignore_crit_damage",
+        "value": true
+      }
     ]
   },
   "fierce_formation_special": {
@@ -167,10 +359,25 @@
     "name": "烈陣",
     "description": "ダメージ軽減・被会心減。デメリット：会心率・回避率減",
     "effects": [
-      { "type": "receive_damage_mod", "value": -0.30 },
-      { "type": "stat_mod", "stat": "crit_chance_received", "value": -0.50 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": -0.50 },
-      { "type": "stat_mod", "stat": "evasion_percent", "value": -0.50 }
+      {
+        "type": "receive_damage_mod",
+        "value": -0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_chance_received",
+        "value": -0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": -0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "evasion_percent",
+        "value": -0.50
+      }
     ]
   },
   "deity_special": {
@@ -178,9 +385,20 @@
     "name": "神衹",
     "description": "攻撃力と状態異常耐性が増加、被ダメージ軽減",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
-      { "type": "receive_damage_mod", "value": -0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      },
+      {
+        "type": "receive_damage_mod",
+        "value": -0.50
+      }
     ]
   },
   "sairei_special": {
@@ -188,7 +406,11 @@
     "name": "淬霊",
     "description": "物理会心ダメージ耐性が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "physical_crit_damage_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "physical_crit_damage_resistance",
+        "value": 0.50
+      }
     ]
   },
   "kenmeiren_special": {
@@ -196,7 +418,11 @@
     "name": "顕明連",
     "description": "状態異常耐性が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
     ]
   },
   "protection_special": {
@@ -204,7 +430,11 @@
     "name": "加護",
     "description": "状態異常耐性が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
     ]
   },
   "indestructible_special": {
@@ -212,11 +442,24 @@
     "name": "不滅",
     "description": "流血耐性、属性ダメ軽減。聖護解除を確率で阻止",
     "effects": [
-      { "type": "status_resistance_specific", "target_debuffs": ["bleed"], "value": 1.0 },
-      { "type": "damage_taken_mod", "damage_type": "elemental", "value": -0.50 }
+      {
+        "type": "status_resistance_specific",
+        "target_debuffs": [
+          "bleed"
+        ],
+        "value": 1.0
+      },
+      {
+        "type": "damage_taken_mod",
+        "damage_type": "elemental",
+        "value": -0.50
+      }
     ],
     "special_properties": [
-      { "type": "buff_protection", "probability": 0.50 }
+      {
+        "type": "buff_protection",
+        "probability": 0.50
+      }
     ]
   },
   "solid_defense_special": {
@@ -231,24 +474,75 @@
       }
     }
   },
-
-  "//_comment": "=== 3. 攻撃・ステータス強化系 ===",
+  "_comment_3": "=== 3. 攻撃・ステータス強化系 ===",
   "divinity_special": {
     "id": "divinity_special",
     "name": "神性",
-    "description": "攻撃力・会心率・耐久力が増加（ギルガメッシュ用）",
+    "description": "被ダメージ-65%、状態異常耐性+50%。致命傷時、異常全解除・HP50%回復・人性+2ターン・曙光1ターン（1回のみ）",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "receive_damage_mod",
+        "value": -0.65
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
+    ],
+    "special_properties": [
+      {
+        "type": "fatal_damage_response",
+        "max_triggers": 1,
+        "effects": [
+          "ignore_damage",
+          "cleanse_all_abnormalities",
+          {
+            "type": "heal",
+            "percent": 0.50
+          },
+          {
+            "type": "extend_buff_duration",
+            "buff_id": "humanity_special",
+            "amount": 2
+          },
+          {
+            "type": "apply_buff",
+            "buff_id": "shoko_special",
+            "duration": 1
+          }
+        ]
+      }
     ]
   },
   "humanity_special": {
     "id": "humanity_special",
     "name": "人性",
-    "description": "攻撃力増加、被ダメージ軽減（ギルガメッシュ用）",
-    "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.30 },
-      { "type": "damage_reduction", "value": 0.30 }
+    "description": "ターン数に応じて被ダメ減少・反射増加・耐性増加。戦闘ターンで減少しない",
+    "mechanics": {
+      "stat_scaling": {
+        "scaling_factor": "duration",
+        "stats": [
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.05
+          },
+          {
+            "stat": "damage_reflection",
+            "base_value": 0.10
+          },
+          {
+            "stat": "status_resistance",
+            "base_value": 0.10
+          }
+        ]
+      }
+    },
+    "special_properties": [
+      {
+        "type": "duration_decay_prevention",
+        "value": true
+      }
     ]
   },
   "lone_force_special": {
@@ -256,9 +550,21 @@
     "name": "孤軍",
     "description": "攻撃力・会心率・反射が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "stat_mod", "stat": "damage_reflection", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "damage_reflection",
+        "value": 0.50
+      }
     ]
   },
   "roar_special": {
@@ -266,12 +572,27 @@
     "name": "咆哮",
     "description": "攻撃力・会心率・反射耐性増。致命傷付与でターン減少",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "stat_mod", "stat": "reflect_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "reflect_resistance",
+        "value": 0.50
+      }
     ],
     "mechanics": {
-      "duration_consumption": { "trigger": "on_fatal_damage_dealt", "value": 1 }
+      "duration_consumption": {
+        "trigger": "on_fatal_damage_dealt",
+        "value": 1
+      }
     }
   },
   "musou_special": {
@@ -279,8 +600,16 @@
     "name": "無双",
     "description": "攻撃力増大、会心発生率増加",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.80 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.80
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      }
     ]
   },
   "hero_special": {
@@ -288,9 +617,21 @@
     "name": "英傑",
     "description": "状態異常耐性・攻撃力・耐性無視が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
     ]
   },
   "coop_attack_special": {
@@ -298,9 +639,21 @@
     "name": "協攻",
     "description": "攻守ステータス増加。終了時に「孤軍」へ変化",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_damage_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_damage_resistance",
+        "value": 0.50
+      }
     ],
     "on_remove": {
       "effect": "apply_buff",
@@ -312,8 +665,16 @@
     "name": "迅速",
     "description": "敏捷値増大、受ける会心ダメージ軽減",
     "effects": [
-      { "type": "stat_mod", "stat": "agility_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_damage_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "agility_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_damage_resistance",
+        "value": 0.50
+      }
     ]
   },
   "dai_tsuren_special": {
@@ -321,7 +682,11 @@
     "name": "大通連",
     "description": "状態異常耐性無視が増加する",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 1.00 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 1.00
+      }
     ]
   },
   "sentaku_special": {
@@ -329,26 +694,66 @@
     "name": "仙澤",
     "description": "状態異常耐性無視とダメージ反射耐性が増加。復活時解除されない",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 },
-      { "type": "stat_mod", "stat": "reflect_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "reflect_resistance",
+        "value": 0.50
+      }
     ],
     "special_properties": [
-      { "type": "persist_on_resurrection", "value": true }
+      {
+        "type": "persist_on_resurrection",
+        "value": true
+      }
     ]
   },
-
-  "//_comment": "=== 4. カウンター・特殊効果系 ===",
+  "_comment_4": "=== 4. カウンター・特殊効果系 ===",
   "tamonto_special": {
     "id": "tamonto_special",
     "name": "多聞塔",
-    "description": "被ダメージがHP5%超え時、全ターン消費して反撃",
+    "description": "被ダメージがHP5%超え時、全ターン消費して反撃（散漫付与・即殺）",
     "counter_effects": [
       {
         "trigger": "on_hit_received",
-        "condition": { "damage_taken": ">", "value": 0.05, "source": "self_max_hp" },
+        "condition": {
+          "damage_taken": ">",
+          "value": 0.05,
+          "source": "self_max_hp"
+        },
         "effect": "special_counter_attack",
         "cost_type": "consume_all_duration",
-        "description": "条件を満たすとターンを全消費して反撃（キャラ固有動作）"
+        "action": {
+          "type": "attack",
+          "target": "lowest_hp_4",
+          "damage": {
+            "formula": "strength",
+            "multiplier_min": 20,
+            "multiplier_max": 50
+          },
+          "effects": [
+            {
+              "type": "apply_debuff",
+              "debuff_id": "distraction_sin",
+              "duration": 4
+            },
+            {
+              "type": "instant_kill",
+              "condition": "hp_lt_35_and_hp_lt_max_atk_x10"
+            }
+          ],
+          "corrections": {
+            "condition": "self_has_buff_frenzy",
+            "value": [
+              "guaranteed_crit",
+              "guaranteed_hit"
+            ]
+          }
+        }
       }
     ]
   },
@@ -357,14 +762,25 @@
     "name": "紅顔",
     "description": "ダメージ軽減、耐性無視増。被弾時に虚弱・束縛・限禁のいずれかを付与",
     "effects": [
-      { "type": "damage_reduction", "value": 0.30 },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
+      {
+        "type": "damage_reduction",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
     ],
     "counter_effects": [
       {
         "trigger": "on_hit_received",
         "effect": "apply_random_debuff",
-        "options": ["weakness_sin", "restrain_sin", "kinkin_sin"],
+        "options": [
+          "weakness_sin",
+          "restrain_sin",
+          "kinkin_sin"
+        ],
         "probability": 1.0,
         "duration": 1
       }
@@ -373,11 +789,11 @@
   "shoko_special": {
     "id": "shoko_special",
     "name": "曙光",
-    "description": "被弾時、敵HPが自身より低い場合、自身の聖護解除を無効化",
+    "description": "聖護状態はHP上限が＜自身の敵に解除されない",
     "special_properties": [
       {
         "type": "buff_protection_sacred",
-        "condition": "self_hp_cap_gt_attacker_hp_cap",
+        "condition": "attacker_hp_cap_lt_self_hp_cap",
         "trigger": "on_hit_received",
         "description": "自身の聖護状態が解除されなくなる"
       }
@@ -388,7 +804,11 @@
     "name": "雷霆",
     "description": "会心率増、被弾時に確率で麻痺付与",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      }
     ],
     "counter_effects": [
       {
@@ -404,8 +824,16 @@
     "name": "乱波",
     "description": "会心率・ダメ増。攻撃時確率で束縛付与、対束縛頑丈",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_damage", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_damage",
+        "value": 0.50
+      }
     ],
     "mechanics": {
       "on_hit": {
@@ -425,7 +853,11 @@
     "name": "情熱",
     "description": "耐性無視増、被弾時に確率で虚弱(罪悪)付与",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance_ignore",
+        "value": 0.50
+      }
     ],
     "counter_effects": [
       {
@@ -441,8 +873,16 @@
     "name": "毒甲",
     "description": "毒耐性無視、反射軽減。被弾時に毒(罪悪)付与",
     "effects": [
-      { "type": "status_resistance_ignore_specific", "target_debuff": "poison", "value": 1.00 },
-      { "type": "receive_damage_mod", "damage_type": "reflection", "value": -0.50 }
+      {
+        "type": "status_resistance_ignore_specific",
+        "target_debuff": "poison",
+        "value": 1.00
+      },
+      {
+        "type": "receive_damage_mod",
+        "damage_type": "reflection",
+        "value": -0.50
+      }
     ],
     "counter_effects": [
       {
@@ -458,16 +898,27 @@
     "name": "重撃",
     "description": "会心率増、反射軽減。会心攻撃でターン減少",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "stat_mod", "stat": "reflect_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "reflect_resistance",
+        "value": 0.50
+      }
     ],
     "mechanics": {
-      "duration_consumption": { "trigger": "on_crit_dealt", "value": 1 }
+      "duration_consumption": {
+        "trigger": "on_crit_dealt",
+        "value": 1
+      }
     }
   },
-  "sonjutsu_sacred": {
-    "id": "sonjutsu_sacred",
-    "name": "存恤(聖護)",
+  "sonjutsu_special": {
+    "id": "sonjutsu_special",
+    "name": "存恤",
     "description": "攻撃を受けた時、特定の味方のHPをダメージ量に応じて回復",
     "counter_effects": [
       {
@@ -478,19 +929,25 @@
       }
     ]
   },
-
-  "//_comment": "=== 5. 復活・回復系 ===",
+  "_comment_5": "=== 5. 復活・回復系 ===",
   "lotus_special": {
     "id": "lotus_special",
     "name": "蓮花",
     "description": "耐性増大。致命傷時、ダメージ無視して回復",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.80 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.80
+      }
     ],
     "special_properties": [
       {
         "type": "fatal_damage_response",
-        "effect": ["ignore_damage", "heal"],
+        "effect": [
+          "ignore_damage",
+          "heal"
+        ],
         "heal_value": "hp_cap_percent"
       }
     ]
@@ -500,12 +957,20 @@
     "name": "青蓮",
     "description": "耐性増。致命傷時、ダメージ無視して回復し解除",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
     ],
     "special_properties": [
       {
         "type": "fatal_damage_response",
-        "effect": ["ignore_damage", "heal", "remove_self"],
+        "effect": [
+          "ignore_damage",
+          "heal",
+          "remove_self"
+        ],
         "heal_value": 0.80
       }
     ]
@@ -516,10 +981,17 @@
     "description": "大ダメージ時、ターン消費して異常解除＆回復",
     "mechanics": {
       "reaction_on_damage": {
-        "condition": { "damage_taken": ">", "value": 0.10, "source": "self_max_hp" },
+        "condition": {
+          "damage_taken": ">",
+          "value": 0.10,
+          "source": "self_max_hp"
+        },
         "cost_type": "reduce_duration",
         "cost_value": 1,
-        "effects": ["cleanse_one", "heal_10_percent"]
+        "effects": [
+          "cleanse_one",
+          "heal_10_percent"
+        ]
       }
     }
   },
@@ -530,8 +1002,16 @@
     "special_properties": [
       {
         "type": "fatal_damage_response",
-        "effect": ["ignore_damage", "heal", "remove_self", "apply_buffs"],
-        "apply_buffs": ["mist_special", "deity_special"]
+        "effect": [
+          "ignore_damage",
+          "heal",
+          "remove_self",
+          "apply_buffs"
+        ],
+        "apply_buffs": [
+          "mist_special",
+          "deity_special"
+        ]
       }
     ]
   },
@@ -543,8 +1023,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "crit_rate_aoe", "base_value": 0.10 },
-          { "stat": "intelligence", "base_value": 0.10 }
+          {
+            "stat": "crit_rate_aoe",
+            "base_value": 0.10
+          },
+          {
+            "stat": "intelligence",
+            "base_value": 0.10
+          }
         ]
       }
     },
@@ -553,40 +1039,16 @@
         "type": "fatal_damage_response",
         "cost_type": "reduce_duration",
         "cost_value": 1,
-        "effects": ["ignore_damage", "reduce_debuff_duration", "recover_shield", "recover_mp"]
+        "effects": [
+          "ignore_damage",
+          "reduce_debuff_duration",
+          "recover_shield",
+          "recover_mp"
+        ]
       }
     ]
   },
-
-  "//_comment": "=== 6. ターン数依存スケーリング系 ===",
-  "deer_cry_special": {
-    "id": "deer_cry_special",
-    "name": "鹿鳴",
-    "description": "ダメージ軽減、HP吸収と状態異常耐性無視が増加",
-    "effects": [
-      { "type": "damage_reduction", "value": 0.30 },
-      { "type": "stat_mod", "stat": "hp_drain", "value": 0.20 },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
-    ]
-  },
-  "yoen_special": {
-    "id": "yoen_special",
-    "name": "妖怨",
-    "description": "ダメージ軽減、状態異常耐性無視が増加",
-    "effects": [
-      { "type": "damage_reduction", "value": 0.30 },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
-    ]
-  },
-  "mechanism_special": {
-    "id": "mechanism_special",
-    "name": "機巧",
-    "description": "ダメージ軽減、状態異常耐性無視が増加",
-    "effects": [
-      { "type": "damage_reduction", "value": 0.30 },
-      { "type": "stat_mod", "stat": "status_resistance_ignore", "value": 0.50 }
-    ]
-  },
+  "_comment_6": "=== 6. ターン数依存スケーリング系 ===",
   "divine_grace_special": {
     "id": "divine_grace_special",
     "name": "神恵",
@@ -595,8 +1057,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "physical_crit_damage", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "physical_crit_damage",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -609,8 +1077,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "defense_percent", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "defense_percent",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -623,7 +1097,10 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "hp_drain", "base_value": 0.10 }
+          {
+            "stat": "hp_drain",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -636,8 +1113,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_dealt", "base_value": 0.10 },
-          { "stat": "status_resistance", "base_value": 0.10 }
+          {
+            "stat": "damage_dealt",
+            "base_value": 0.10
+          },
+          {
+            "stat": "status_resistance",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -650,13 +1133,22 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_dealt", "base_value": 0.10 },
-          { "stat": "crit_rate", "base_value": 0.10 }
+          {
+            "stat": "damage_dealt",
+            "base_value": 0.10
+          },
+          {
+            "stat": "crit_rate",
+            "base_value": 0.10
+          }
         ]
       }
     },
     "special_properties": [
-      { "type": "duration_decay_prevention", "value": true }
+      {
+        "type": "duration_decay_prevention",
+        "value": true
+      }
     ]
   },
   "radiance_special": {
@@ -667,8 +1159,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_dealt", "base_value": 0.10 },
-          { "stat": "damage_reduction", "base_value": 0.10 }
+          {
+            "stat": "damage_dealt",
+            "base_value": 0.10
+          },
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -679,11 +1177,23 @@
     "description": "残りターン数と残りHPに応じて会心率・会心ダメ増、被ダメ減",
     "mechanics": {
       "stat_scaling": {
-        "scaling_factor": ["duration", "hp_percent_loss"],
+        "scaling_factor": [
+          "duration",
+          "hp_percent_loss"
+        ],
         "stats": [
-          { "stat": "crit_rate", "base_value": 0.10 },
-          { "stat": "crit_damage", "base_value": 0.10 },
-          { "stat": "damage_reduction", "base_value": 0.10 }
+          {
+            "stat": "crit_rate",
+            "base_value": 0.10
+          },
+          {
+            "stat": "crit_damage",
+            "base_value": 0.10
+          },
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -696,8 +1206,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "physical_crit_damage", "base_value": 0.10 },
-          { "stat": "damage_reduction", "base_value": 0.10 }
+          {
+            "stat": "physical_crit_damage",
+            "base_value": 0.10
+          },
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -710,8 +1226,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "crit_rate", "base_value": 0.10 },
-          { "stat": "strength", "base_value": 0.10 }
+          {
+            "stat": "crit_rate",
+            "base_value": 0.10
+          },
+          {
+            "stat": "strength",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -724,8 +1246,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "attack_percent", "base_value": 0.20 },
-          { "stat": "hp_drain", "base_value": 0.20 }
+          {
+            "stat": "attack_percent",
+            "base_value": 0.20
+          },
+          {
+            "stat": "hp_drain",
+            "base_value": 0.20
+          }
         ]
       }
     }
@@ -738,10 +1266,22 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "hp_drain", "base_value": 0.10 },
-          { "stat": "physical_crit_damage", "base_value": 0.10 },
-          { "stat": "status_resistance", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "hp_drain",
+            "base_value": 0.10
+          },
+          {
+            "stat": "physical_crit_damage",
+            "base_value": 0.10
+          },
+          {
+            "stat": "status_resistance",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -754,8 +1294,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "hp_drain", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "hp_drain",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -768,8 +1314,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "intelligence", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "intelligence",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -782,8 +1334,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "agility", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "agility",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -796,8 +1354,14 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "strength", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "strength",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -810,14 +1374,28 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "agility", "base_value": 0.10 },
-          { "stat": "damage_dealt", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "agility",
+            "base_value": 0.10
+          },
+          {
+            "stat": "damage_dealt",
+            "base_value": 0.10
+          }
         ]
       }
     },
     "effects": [
-      { "type": "status_immunity", "target_types": ["control_restriction"] }
+      {
+        "type": "status_immunity",
+        "target_types": [
+          "control_restriction"
+        ]
+      }
     ]
   },
   "magical_god_special": {
@@ -828,13 +1406,22 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "damage_reduction", "base_value": 0.10 },
-          { "stat": "intelligence", "base_value": 0.10 }
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10
+          },
+          {
+            "stat": "intelligence",
+            "base_value": 0.10
+          }
         ]
       }
     },
     "special_properties": [
-      { "type": "duration_decay_prevention", "value": true }
+      {
+        "type": "duration_decay_prevention",
+        "value": true
+      }
     ]
   },
   "fire_seed_special": {
@@ -845,9 +1432,18 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "attack_percent", "base_value": 0.10 },
-          { "stat": "all_stats_percent", "base_value": 0.10 },
-          { "stat": "status_resistance", "base_value": 0.10 }
+          {
+            "stat": "attack_percent",
+            "base_value": 0.10
+          },
+          {
+            "stat": "all_stats_percent",
+            "base_value": 0.10
+          },
+          {
+            "stat": "status_resistance",
+            "base_value": 0.10
+          }
         ]
       }
     }
@@ -860,8 +1456,16 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "evasion_percent", "base_value": -0.10, "description": "残りターン数に応じて回避率減少" },
-          { "stat": "damage_reduction", "base_value": 0.10, "description": "残りターン数に応じて被ダメージ軽減" }
+          {
+            "stat": "evasion_percent",
+            "base_value": -0.10,
+            "description": "残りターン数に応じて回避率減少"
+          },
+          {
+            "stat": "damage_reduction",
+            "base_value": 0.10,
+            "description": "残りターン数に応じて被ダメージ軽減"
+          }
         ]
       }
     }

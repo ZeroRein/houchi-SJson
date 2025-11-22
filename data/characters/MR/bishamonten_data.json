@@ -280,19 +280,19 @@
         ],
         "special_rules": {
           "buff_property_override": {
-            "target_buff": "unman_sacred",
+            "target_buff": "cloud_full_sacred",
             "property": "unremovable"
           }
         }
       },
       "battle_start_effects": [
         {
-          "buff": "deity",
+          "buff": "deity_special",
           "duration": "infinite",
           "removable": false
         },
         {
-          "buff": "teikon_sacred",
+          "buff": "fixed_soul_sacred",
           "name": "定魂(聖護)",
           "duration": 2
         },
@@ -332,7 +332,7 @@
               "buffs": [
                 "mist_special",
                 "tamonto_special",
-                "unman_sacred"
+                "cloud_full_sacred"
               ],
               "durations": [
                 1,

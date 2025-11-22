@@ -1,0 +1,336 @@
+{
+  "character_info": {
+    "id": "ranma_mr",
+    "name": "らんま",
+    "rarity": "MR",
+    "class": "warrior",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "ほれ、注文の料理だぜ！",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "highest_max_attack",
+        "count": 4,
+        "repeat": 3
+      },
+      "damage_formula": {
+        "base_percent": 1000,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "strength",
+            "multiplier": 16
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.80
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1,
+              "probability": 1.0
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "confusion_sin",
+              "name": "困惑(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "crit_rate_bonus": {
+            "base": 0.20,
+            "max": 0.80,
+            "scaling_stat": "target_hp_percent",
+            "scaling_direction": "higher_is_better"
+          },
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_has_buff": "frenzy_special"
+              },
+              "special_effect": [
+                "guaranteed_crit",
+                "guaranteed_hit"
+              ]
+            }
+          ]
+        },
+        {
+          "phase": "post_skill",
+          "conditions": {
+            "remaining_enemies": 1
+          },
+          "extra_action": {
+            "type": "attack",
+            "count": 4,
+            "target": "same_target"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "apply_buff",
+              "target": "self",
+              "buffs": [
+                "frenzy_special",
+                "hyoshin_special"
+              ],
+              "duration": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "娘溺泉の伝説",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "lowest_hp_percent",
+        "count": 4,
+        "repeat": 2
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "physical",
+        "additions": [
+          {
+            "source_stat": "strength",
+            "multiplier": 16
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.80
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 1,
+              "probability": 1.0
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "damage_corrections": [
+            {
+              "condition": {
+                "self_stat": "hp_percent",
+                "operator": ">",
+                "value": 0.50
+              },
+              "special_effect": "guaranteed_crit"
+            },
+            {
+              "condition": {
+                "self_stat": "max_hp",
+                "operator": ">",
+                "target_stat": "hp_value"
+              },
+              "special_effect": "guaranteed_hit"
+            },
+            {
+              "condition": {
+                "self_has_buff": "frenzy_special"
+              },
+              "special_effect": [
+                "guaranteed_crit",
+                "guaranteed_hit"
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "condition": {
+                "is_crit": true
+              },
+              "type": "apply_debuff",
+              "debuff_id": "burn_sin",
+              "name": "燃焼(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "post_hit_action",
+          "type": "extra_attack",
+          "count": 5,
+          "targeting": "lowest_hp_percent",
+          "repeat_condition": {
+            "trigger": "on_crit",
+            "max_extra_repeats": 6,
+            "description": "会心発生ごとに回数+1(最大+6)"
+          },
+          "damage_formula_override": {
+            "base_percent": 900,
+            "type": "physical",
+            "additions": [
+              {
+                "source_stat": "strength",
+                "multiplier": 32
+              },
+              {
+                "source_stat": "attack",
+                "multiplier": 0.60
+              }
+            ]
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": "allies_6",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": "allies_6",
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": "allies_6",
+              "buff_id": "blood_oath_sacred",
+              "name": "血誓(聖護)",
+              "duration": 4
+            }
+          ]
+        }
+      ],
+      "special_properties": {
+        "immortality_during_skill": {
+          "min_hp_percent": 1,
+          "exceptions": [
+            "skill_start_lt_1_percent",
+            "counter_damage",
+            "splash_damage"
+          ]
+        }
+      }
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "異界",
+      "type": "passive_stat",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "damage_reduction",
+          "value": 0.65
+        },
+        {
+          "stat": "status_res_percent",
+          "value": 1.00
+        },
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.00
+        }
+      ]
+    },
+    {
+      "name": "パッシブ3",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          {
+            "stat": "attack_percent",
+            "value": 0.50
+          },
+          {
+            "stat": "defense_percent",
+            "value": 0.80
+          },
+          {
+            "stat": "all_stats_percent",
+            "value": 0.20
+          },
+          {
+             "stat": "damage_reduction",
+             "value": 0.50
+          },
+          {
+             "stat": "damage_reflection",
+             "value": 0.80
+          },
+          {
+            "stat": "aoe_damage_dealt",
+            "value": 0.60
+          }
+        ],
+        "trigger_effects": [
+            {
+                "trigger": "on_hit_received",
+                "effect": "apply_debuff",
+                "debuff_id": "bleed_sin",
+                "probability": 0.50,
+                "duration": 1
+            },
+            {
+               "trigger": "on_aoe_received",
+               "effect": "apply_debuff",
+               "debuff_id": "distraction_sin",
+               "probability": 1.0,
+               "duration": 1
+            }
+        ]
+      },
+      "enemy_debuffs_aura": {
+         "target": "enemies",
+         "debuffs": [
+             {
+                 "id": "gekido_special",
+                 "name": "激怒",
+                 "condition": "always_active"
+             }
+         ]
+      }
+    }
+  ]
+}

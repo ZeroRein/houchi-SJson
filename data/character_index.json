@@ -64,5 +64,17 @@
     "file_path": "./characters/MR/merlin_data.json",
     "rarity": "MR",
     "class": "strategist"
+  },
+  "ranma_mr": {
+    "name": "らんま",
+    "file_path": "./characters/MR/ranma_data.json",
+    "rarity": "MR",
+    "class": "warrior"
+  },
+  "inarikami_mr": {
+    "name": "稲荷神",
+    "file_path": "./characters/MR/inarikami_data.json",
+    "rarity": "MR",
+    "class": "strategist"
   }
 }

@@ -1,0 +1,425 @@
+{
+  "character_info": {
+    "id": "inarikami_mr",
+    "name": "稲荷神",
+    "rarity": "MR",
+    "class": "strategist",
+    "element": "none"
+  },
+  "active_skills": [
+    {
+      "id": 1,
+      "name": "神代の歌",
+      "type": "active",
+      "unlock_level": 0,
+      "targeting": {
+        "type": "random",
+        "count": 6,
+        "repeat": 1,
+        "follow_up": {
+          "type": "concentrated",
+          "count": 5,
+          "target": "highest_hp_percent"
+        }
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 12
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.60
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 2,
+              "probability": 1.0
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "wind_breach_sin",
+              "name": "風破(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "extra_attack_pre_hit",
+          "effects": [
+            {
+              "condition": {
+                "target_has_debuff": "seal_sin"
+              },
+              "type": "extend_debuff_duration",
+              "debuff_id": "seal_sin",
+              "amount": 1,
+              "max_duration": 2
+            },
+            {
+              "condition": {
+                "target_has_debuff": "seal_sin",
+                "negate": true
+              },
+              "type": "apply_debuff",
+              "debuff_id": "seal_sin",
+              "name": "封印(罪悪)",
+              "probability": 1.0,
+              "duration": 1
+            }
+          ],
+          "damage_corrections": [
+            {
+              "condition": {
+                "target_has_debuff": "seal_sin"
+              },
+              "special_effect": "guaranteed_crit"
+            }
+          ]
+        },
+        {
+          "phase": "end_of_skill",
+          "effects": [
+            {
+              "type": "heal_self",
+              "amount_basis": "total_damage_dealt",
+              "multiplier": 0.35
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "豊穣の祝",
+      "type": "active",
+      "unlock_level": 2,
+      "targeting": {
+        "type": "most_debuffs_calamities",
+        "count": 3,
+        "repeat": 1
+      },
+      "damage_formula": {
+        "base_percent": 900,
+        "type": "magic",
+        "additions": [
+          {
+            "source_stat": "intelligence",
+            "multiplier": 12
+          },
+          {
+            "source_stat": "attack",
+            "multiplier": 0.50
+          }
+        ]
+      },
+      "action_flow": [
+        {
+          "phase": "pre_hit",
+          "effects": [
+            {
+              "type": "remove_buff",
+              "target": "enemy",
+              "target_buff_types": [
+                "beneficial",
+                "sacred"
+              ],
+              "count": 2,
+              "probability": 1.0
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "tear_sin",
+              "name": "引裂(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            },
+            {
+              "type": "apply_debuff",
+              "debuff_id": "bleed_sin",
+              "name": "流血(罪悪)",
+              "probability": 1.0,
+              "duration": 4
+            }
+          ]
+        },
+        {
+          "phase": "on_hit",
+          "crit_rate_bonus": {
+            "base": 0.20,
+            "max": 0.60,
+            "scaling_stat": "target_hp_percent",
+            "scaling_direction": "higher_is_better"
+          }
+        },
+        {
+          "phase": "end_of_skill",
+          "condition": {
+            "self_stat": "hp_percent",
+            "operator": "<",
+            "value": 0.50
+          },
+          "effects": [
+            {
+              "type": "heal_self",
+              "amount_basis": "damage_100_percent"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passive_skills": [
+    {
+      "name": "神代の舞",
+      "type": "passive_stat",
+      "unlock_level": 1,
+      "bonuses": [
+        {
+          "stat": "attack_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "intelligence",
+          "scaling": "level",
+          "multiplier": 400
+        }
+      ]
+    },
+    {
+      "name": "世々代々",
+      "type": "passive_resonance",
+      "unlock_level": 3,
+      "bonuses": [
+        {
+          "stat": "hp_percent",
+          "value": 0.70
+        },
+        {
+          "stat": "max_mp",
+          "scaling": "level",
+          "multiplier": 400
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "strength_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "霊狐の守り",
+      "type": "passive_awakening",
+      "unlock_level": 5,
+      "bonuses": [
+        {
+          "condition": "in_battle",
+          "stat": "intelligence_percent",
+          "value": 0.25
+        },
+        {
+          "stat": "all_type_damage_reduction",
+          "value": 0.50
+        }
+      ],
+      "aura_effects": {
+        "condition": "self_alive",
+        "target": "allies",
+        "bonuses": [
+          {
+            "stat": "intelligence_percent",
+            "value": 0.15
+          }
+        ],
+        "damage_reduction": [
+          {
+            "source_type": "strength_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 2
+          },
+          {
+            "source_type": "attack_based",
+            "subtrahend_stat": "self_intelligence",
+            "multiplier": 1
+          }
+        ],
+        "special_rules": {
+          "buff_property_override": {
+            "target_buffs": [
+              "concentration_sacred",
+              "endurance_sacred"
+            ],
+            "property": "unremovable"
+          }
+        }
+      },
+      "battle_start_effects": [
+        {
+          "buff": "cold_blood_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "accumulate_sacred",
+          "duration": "infinite",
+          "removable": false
+        },
+        {
+          "buff": "deity_special",
+          "duration": "infinite",
+          "removable": false
+        }
+      ],
+      "combat_mechanics": {
+        "on_hit_taken": {
+          "condition": {
+            "damage_taken": ">",
+            "value": 0.10,
+            "source": "self_max_hp"
+          },
+          "max_triggers_per_turn": 2,
+          "effects": [
+            {
+              "type": "apply_buff",
+              "buff_id": "shadow_armor_sacred",
+              "duration": 2
+            }
+          ]
+        },
+        "on_skill_attack": {
+          "condition": {
+            "target_has_buff": [
+              "shadow_armor_sacred",
+              "extinction_sacred"
+            ]
+          },
+          "damage_multiplier": 2.0
+        },
+        "fatal_damage_response": {
+          "max_triggers": 4,
+          "effects": [
+            "ignore_damage",
+            "cleanse_all_abnormalities",
+            "heal_80_percent",
+            {
+              "type": "apply_buff",
+              "buffs": [
+                "shadow_armor_sacred",
+                "mist_special"
+              ],
+              "duration": 4
+            }
+          ]
+        }
+      },
+      "trigger_effects": [
+        {
+          "trigger": "on_action_end",
+          "effects": [
+            {
+              "type": "heal_team",
+              "target": [
+                "self",
+                "lowest_hp_percent_strategists_3"
+              ],
+              "amount_basis": "self_max_hp",
+              "multiplier": 0.10
+            },
+            {
+              "type": "cleanse_team",
+              "target": [
+                "self",
+                "lowest_hp_percent_strategists_3"
+              ],
+              "count": 1
+            },
+            {
+              "type": "apply_buff",
+              "target": [
+                "self",
+                "lowest_hp_percent_strategists_3"
+              ],
+              "buffs": [
+                "concentration_sacred",
+                "endurance_sacred"
+              ],
+              "duration": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "破邪の秘法",
+      "type": "passive_resonance",
+      "unlock_level": 7,
+      "bonuses": [
+        {
+          "stat": "status_res_ignore_percent",
+          "value": 1.20
+        },
+        {
+          "stat": "vit",
+          "scaling": "level",
+          "multiplier": 300
+        }
+      ],
+      "mechanics": {
+        "damage_reduction": {
+          "source_damage_type": "attack_based",
+          "reduction_formula": {
+            "subtrahend_stat": "intelligence",
+            "multiplier": 3
+          }
+        }
+      },
+      "entry_effects": {
+        "allies": {
+          "target": "self_and_adjacent",
+          "buffs": [
+            "flower_words_sacred",
+            "shadow_armor_sacred"
+          ],
+          "duration": 4
+        },
+        "allies_selective": {
+          "target": [
+            "self",
+            "highest_max_attack_strategists_3"
+          ],
+          "buffs": [
+            "concentration_sacred",
+            "endurance_sacred"
+          ],
+          "duration": 4
+        }
+      }
+    }
+  ]
+}

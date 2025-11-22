@@ -1,17 +1,17 @@
 {
-  "//_comment": "=== 1. バリア・ダメージ吸収系 ===",
+  "_comment_1": "=== 1. バリア・ダメージ吸収系 ===",
   "blood_oath_sacred": {
     "id": "blood_oath_sacred",
     "name": "血誓(聖護)",
-    "description": "HPベースのダメージ吸収バリア。ダメカなし、重ね掛け可能",
+    "description": "HP減少分を上回る回復量をダメージ吸収として蓄積。上限はHP上限",
     "mechanics": {
-      "shield_type": "hp_based",
+      "shield_type": "hp_overheal_accumulation",
       "shield_priority": 1,
       "stackable": true,
       "stack_limit": "caster_max_hp",
       "damage_reduction": 0.0,
       "merge_rule": "stack_value",
-      "description": "処理順1位。吸収量は付与者のHP上限まで累積可能"
+      "description": "処理順1位。回復超過分を吸収バリアに変換。複数回付与で累積"
     }
   },
   "extinction_sacred": {
@@ -50,8 +50,7 @@
       "description": "処理順3位。重ね掛け不可（ターン数が多い方を優先して上書き）"
     }
   },
-
-  "//_comment": "=== 2. 防御・カウンター系 ===",
+  "_comment_2": "=== 2. 防御・カウンター系 ===",
   "taunt_sacred": {
     "id": "taunt_sacred",
     "name": "嘲弄(聖護)",
@@ -60,24 +59,33 @@
       {
         "type": "aggro_redirection",
         "condition": "self_hp_gt_target_hp",
-        "ignore_types": ["concentrated", "switch", "counter"]
+        "ignore_types": [
+          "concentrated",
+          "switch",
+          "counter"
+        ]
       }
     ]
   },
   "cover_sacred": {
     "id": "cover_sacred",
     "name": "援護(聖護)",
-    "description": "受けるダメージ減少、反射増加、被弾時に流血(罪悪)付与",
+    "description": "被ダメージ-50%、反射+80%、被弾時50%で流血(罪悪)付与",
     "mechanics": {
-      "damage_reduction": { "value": 0.50 },
-      "damage_reflection": { "value": 0.50 }
+      "damage_reduction": {
+        "value": 0.50
+      },
+      "damage_reflection": {
+        "value": 0.80
+      }
     },
     "counter_effects": [
       {
         "trigger": "on_hit_received",
         "effect": "apply_debuff",
         "debuff_id": "bleed_sin",
-        "probability": 0.50
+        "probability": 0.50,
+        "duration": 1
       }
     ]
   },
@@ -86,14 +94,24 @@
     "name": "荊棘(聖護)",
     "description": "反射増加、大ダメージを受けた時に攻撃者の聖護を解除",
     "effects": [
-      { "type": "stat_mod", "stat": "damage_reflection", "value": 1.00 }
+      {
+        "type": "stat_mod",
+        "stat": "damage_reflection",
+        "value": 1.00
+      }
     ],
     "counter_effects": [
       {
         "trigger": "on_hit_received",
-        "condition": { "damage_taken": ">", "value": 0.05, "source": "self_max_hp" },
+        "condition": {
+          "damage_taken": ">",
+          "value": 0.05,
+          "source": "self_max_hp"
+        },
         "effect": "remove_buff",
-        "target_buff_types": ["sacred"],
+        "target_buff_types": [
+          "sacred"
+        ],
         "count": 1
       }
     ]
@@ -103,8 +121,16 @@
     "name": "炎盾(聖護)",
     "description": "防御力とダメージ反射を増加",
     "effects": [
-      { "type": "stat_mod", "stat": "defense_percent", "value": 1.0 },
-      { "type": "stat_mod", "stat": "damage_reflection", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "defense_percent",
+        "value": 1.0
+      },
+      {
+        "type": "stat_mod",
+        "stat": "damage_reflection",
+        "value": 0.50
+      }
     ]
   },
   "thunder_armor_sacred": {
@@ -118,7 +144,11 @@
       }
     },
     "effects": [
-      { "type": "stat_mod", "stat": "defense_percent", "value": 1.40 }
+      {
+        "type": "stat_mod",
+        "stat": "defense_percent",
+        "value": 1.40
+      }
     ],
     "counter_effects": [
       {
@@ -135,12 +165,22 @@
     "description": "ダメカ、防御増、凍結カウンター",
     "mechanics": {
       "damage_reduction": [
-        { "value": 0.40 },
-        { "condition": "attacker_has_status_ailment", "value": 0.20, "type": "add" }
+        {
+          "value": 0.40
+        },
+        {
+          "condition": "attacker_has_status_ailment",
+          "value": 0.20,
+          "type": "add"
+        }
       ]
     },
     "effects": [
-      { "type": "stat_mod", "stat": "defense_percent", "value": 1.40 }
+      {
+        "type": "stat_mod",
+        "stat": "defense_percent",
+        "value": 1.40
+      }
     ],
     "counter_effects": [
       {
@@ -156,8 +196,16 @@
     "name": "岩鎧(聖護)",
     "description": "防御増、回復率増、HP減少時ダメカ",
     "effects": [
-      { "type": "stat_mod", "stat": "defense_percent", "value": 1.50 },
-      { "type": "stat_mod", "stat": "hp_recovery_rate", "value": 0.05 }
+      {
+        "type": "stat_mod",
+        "stat": "defense_percent",
+        "value": 1.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "hp_recovery_rate",
+        "value": 0.05
+      }
     ],
     "mechanics": {
       "damage_reduction": {
@@ -191,7 +239,11 @@
     "name": "残影(聖護)",
     "description": "回避率とダメカ増加、回避で強化",
     "effects": [
-      { "type": "stat_mod", "stat": "evasion_percent", "value": 0.60 }
+      {
+        "type": "stat_mod",
+        "stat": "evasion_percent",
+        "value": 0.60
+      }
     ],
     "mechanics": {
       "damage_reduction": {
@@ -206,10 +258,16 @@
     "name": "光輪(聖護)",
     "description": "ダメカと物理会心ダメ耐性増加",
     "mechanics": {
-      "damage_reduction": { "value": 0.40 }
+      "damage_reduction": {
+        "value": 0.40
+      }
     },
     "effects": [
-      { "type": "stat_mod", "stat": "physical_crit_damage_resistance", "value": 0.40 }
+      {
+        "type": "stat_mod",
+        "stat": "physical_crit_damage_resistance",
+        "value": 0.40
+      }
     ]
   },
   "veil_sacred": {
@@ -218,10 +276,16 @@
     "description": "武将・弓将からのダメカ増、謀士からは被ダメ増",
     "mechanics": {
       "damage_reduction": [
-        { "condition": "source_class_is_warrior_or_archer", "value": 0.40 }
+        {
+          "condition": "source_class_is_warrior_or_archer",
+          "value": 0.40
+        }
       ],
       "damage_taken_mod": [
-        { "condition": "source_class_is_strategist", "value": 0.20 }
+        {
+          "condition": "source_class_is_strategist",
+          "value": 0.20
+        }
       ]
     }
   },
@@ -230,10 +294,18 @@
     "name": "決意(聖護)",
     "description": "ダメカ増、嘲弄・援護の解除無視",
     "mechanics": {
-      "damage_reduction": { "value": 0.30 }
+      "damage_reduction": {
+        "value": 0.30
+      }
     },
     "special_properties": [
-      { "type": "prevent_buff_removal", "target_buffs": ["taunt_sacred", "cover_sacred"] }
+      {
+        "type": "prevent_buff_removal",
+        "target_buffs": [
+          "taunt_sacred",
+          "cover_sacred"
+        ]
+      }
     ]
   },
   "resolute_sacred": {
@@ -241,10 +313,18 @@
     "name": "決然(聖護)",
     "description": "ダメカ増、敵への虚弱・盲目の解除無視",
     "mechanics": {
-      "damage_reduction": { "value": 0.30 }
+      "damage_reduction": {
+        "value": 0.30
+      }
     },
     "special_properties": [
-      { "type": "prevent_debuff_removal_on_enemy", "target_debuffs": ["weakness_sin", "blind_sin"] }
+      {
+        "type": "prevent_debuff_removal_on_enemy",
+        "target_debuffs": [
+          "weakness_sin",
+          "blind_sin"
+        ]
+      }
     ]
   },
   "endurance_sacred": {
@@ -252,8 +332,16 @@
     "name": "堅忍(聖護)",
     "description": "物理・法術の会心ダメ耐性増",
     "effects": [
-      { "type": "stat_mod", "stat": "physical_crit_damage_resistance", "value": 1.00 },
-      { "type": "stat_mod", "stat": "magic_crit_damage_resistance", "value": 0.20 }
+      {
+        "type": "stat_mod",
+        "stat": "physical_crit_damage_resistance",
+        "value": 1.00
+      },
+      {
+        "type": "stat_mod",
+        "stat": "magic_crit_damage_resistance",
+        "value": 0.20
+      }
     ]
   },
   "wind_rider_sacred": {
@@ -261,7 +349,10 @@
     "name": "御風(聖護)",
     "description": "範囲攻撃のダメカ増",
     "mechanics": {
-      "damage_reduction": { "condition": "attack_type_is_aoe", "value": 0.50 }
+      "damage_reduction": {
+        "condition": "attack_type_is_aoe",
+        "value": 0.25
+      }
     }
   },
   "resistance_sacred": {
@@ -269,7 +360,10 @@
     "name": "抵抗(聖護)",
     "description": "連撃のダメカ増",
     "mechanics": {
-      "damage_reduction": { "condition": "attack_type_is_multi_hit", "value": 0.50 }
+      "damage_reduction": {
+        "condition": "attack_type_is_multi_hit",
+        "value": 0.50
+      }
     }
   },
   "mist_sacred": {
@@ -277,8 +371,14 @@
     "name": "霧中(聖護)",
     "description": "範囲攻撃のみ受ける、耐性アップ",
     "effects": [
-      { "type": "target_restriction", "value": "aoe_only" },
-      { "type": "resistance_up", "value": 0.50 }
+      {
+        "type": "target_restriction",
+        "value": "aoe_only"
+      },
+      {
+        "type": "resistance_up",
+        "value": 0.50
+      }
     ]
   },
   "new_moon_sacred": {
@@ -308,17 +408,32 @@
       }
     ]
   },
-
-  "//_comment": "=== 3. 攻撃・ステータス強化系 ===",
+  "_comment_3": "=== 3. 攻撃・ステータス強化系 ===",
   "rage_sacred": {
     "id": "rage_sacred",
     "name": "暴走(聖護)",
     "description": "攻撃力とステータスが大幅増加、被ダメージも少し増加",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 1.0 },
-      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.60 },
-      { "type": "receive_damage_mod", "value": 0.25 },
-      { "type": "status_immunity", "target_types": ["negative"] }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 1.0
+      },
+      {
+        "type": "stat_mod",
+        "stat": "all_stats_percent",
+        "value": 0.60
+      },
+      {
+        "type": "receive_damage_mod",
+        "value": 0.25
+      },
+      {
+        "type": "status_immunity",
+        "target_types": [
+          "negative"
+        ]
+      }
     ]
   },
   "accumulate_sacred": {
@@ -326,9 +441,21 @@
     "name": "畜力(聖護)",
     "description": "攻撃力、反射耐性、状態異常耐性を増加",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.80 },
-      { "type": "stat_mod", "stat": "reflect_resistance", "value": 0.80 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.80 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.80
+      },
+      {
+        "type": "stat_mod",
+        "stat": "reflect_resistance",
+        "value": 0.80
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.80
+      }
     ]
   },
   "seven_stars_sacred": {
@@ -339,10 +466,22 @@
       "stat_scaling": {
         "scaling_factor": "duration",
         "stats": [
-          { "stat": "attack_percent", "base_value": 0.15 },
-          { "stat": "crit_rate", "base_value": 0.15 },
-          { "stat": "all_stats_percent", "base_value": 0.10 },
-          { "stat": "primary_stat_percent", "base_value": 0.0 }
+          {
+            "stat": "attack_percent",
+            "base_value": 0.15
+          },
+          {
+            "stat": "crit_rate",
+            "base_value": 0.15
+          },
+          {
+            "stat": "all_stats_percent",
+            "base_value": 0.10
+          },
+          {
+            "stat": "primary_stat_percent",
+            "base_value": 0.0
+          }
         ]
       }
     }
@@ -352,15 +491,24 @@
     "name": "祝福(聖護)",
     "description": "攻撃力と会心率増加、攻撃を受けるとターン数を消費して無効化",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.80
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.40
+      }
     ],
     "special_properties": [
       {
         "type": "damage_negation",
         "cost_type": "reduce_duration",
         "cost_value": 1,
-        "condition": "on_hit_received"
+        "condition": "on_hit_received",
+        "description": "攻撃ダメージ、範囲反撃、転嫁ダメージを1回無効化"
       }
     ]
   },
@@ -369,19 +517,43 @@
     "name": "幸運(聖護)",
     "description": "ステータス、会心率、状態異常耐性を増加",
     "effects": [
-      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.20 },
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.30 },
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "all_stats_percent",
+        "value": 0.20
+      },
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.30
+      },
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      }
     ]
   },
   "inspire_sacred": {
     "id": "inspire_sacred",
     "name": "奮起(聖護)",
-    "description": "攻撃力、防御力、ステータスをバランス良く増加",
+    "description": "攻撃+50%、防御+80%、筋/敏/知+20%",
     "effects": [
-      { "type": "stat_mod", "stat": "attack_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "defense_percent", "value": 0.80 },
-      { "type": "stat_mod", "stat": "all_stats_percent", "value": 0.20 }
+      {
+        "type": "stat_mod",
+        "stat": "attack_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "defense_percent",
+        "value": 0.80
+      },
+      {
+        "type": "stat_mod",
+        "stat": "all_stats_percent",
+        "value": 0.20
+      }
     ]
   },
   "encourage_sacred": {
@@ -392,8 +564,16 @@
       "stat_transfer": {
         "basis": "caster_stats",
         "stats": [
-          { "source": "attack_max", "target": "attack_min_max", "multiplier": 0.25 },
-          { "source": "defense", "target": "defense", "multiplier": 0.50 }
+          {
+            "source": "attack_max",
+            "target": "attack_min_max",
+            "multiplier": 0.25
+          },
+          {
+            "source": "defense",
+            "target": "defense",
+            "multiplier": 0.50
+          }
         ]
       }
     }
@@ -403,8 +583,16 @@
     "name": "冷血(聖護)",
     "description": "会心率増加、敵の挑発系効果を無視",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 },
-      { "type": "target_ignore_taunt", "value": true, "description": "挑発・嘲弄などのターゲット誘導を無視して攻撃可能" }
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      },
+      {
+        "type": "target_ignore_taunt",
+        "value": true,
+        "description": "挑発・嘲弄などのターゲット誘導を無視して攻撃可能"
+      }
     ]
   },
   "haste_sacred": {
@@ -412,12 +600,22 @@
     "name": "急攻(聖護)",
     "description": "会心発生率増加。会心成否で残りターン数が増減",
     "effects": [
-      { "type": "stat_mod", "stat": "crit_rate", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "crit_rate",
+        "value": 0.50
+      }
     ],
     "mechanics": {
       "duration_mod": {
-        "on_crit": { "value": 1, "description": "会心発生時、ターン数+1" },
-        "on_non_crit": { "value": -1, "description": "会心未発生時、ターン数-1" }
+        "on_crit": {
+          "value": 1,
+          "description": "会心発生時、ターン数+1"
+        },
+        "on_non_crit": {
+          "value": -1,
+          "description": "会心未発生時、ターン数-1"
+        }
       }
     }
   },
@@ -438,7 +636,11 @@
     "name": "集中(聖護)",
     "description": "法術会心ダメージが増加",
     "effects": [
-      { "type": "stat_mod", "stat": "magic_crit_damage", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "magic_crit_damage",
+        "value": 1.00
+      }
     ]
   },
   "shadow_dance_sacred": {
@@ -446,7 +648,11 @@
     "name": "影舞(聖護)",
     "description": "物理会心ダメージが増加",
     "effects": [
-      { "type": "stat_mod", "stat": "physical_crit_damage", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "physical_crit_damage",
+        "value": 0.50
+      }
     ]
   },
   "ferocity_sacred": {
@@ -457,9 +663,18 @@
       "stat_boost": {
         "condition": "source_class_is_warrior_or_archer",
         "stats": [
-          { "stat": "damage_dealt", "value": 0.30 },
-          { "stat": "crit_rate", "value": 0.30 },
-          { "stat": "physical_crit_damage", "value": 0.50 }
+          {
+            "stat": "damage_dealt",
+            "value": 0.30
+          },
+          {
+            "stat": "crit_rate",
+            "value": 0.30
+          },
+          {
+            "stat": "physical_crit_damage",
+            "value": 0.50
+          }
         ]
       }
     }
@@ -469,8 +684,16 @@
     "name": "顕聖(聖護)",
     "description": "物理防御貫通と法術防御貫通が増加",
     "effects": [
-      { "type": "stat_mod", "stat": "physical_penetration_percent", "value": 0.50 },
-      { "type": "stat_mod", "stat": "magic_penetration_percent", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "physical_penetration_percent",
+        "value": 0.50
+      },
+      {
+        "type": "stat_mod",
+        "stat": "magic_penetration_percent",
+        "value": 0.50
+      }
     ]
   },
   "strong_edge_sacred": {
@@ -481,8 +704,14 @@
       "stat_boost": {
         "condition": "attack_type_is_single_or_random",
         "stats": [
-          { "stat": "crit_rate", "value": 0.40 },
-          { "stat": "physical_crit_damage", "value": 0.50 }
+          {
+            "stat": "crit_rate",
+            "value": 0.40
+          },
+          {
+            "stat": "physical_crit_damage",
+            "value": 0.50
+          }
         ]
       }
     }
@@ -495,8 +724,14 @@
       "stat_boost": {
         "condition": "attack_type_is_single_or_random",
         "stats": [
-          { "stat": "damage_dealt", "value": 0.40 },
-          { "stat": "crit_rate", "value": 0.40 }
+          {
+            "stat": "damage_dealt",
+            "value": 0.40
+          },
+          {
+            "stat": "crit_rate",
+            "value": 0.40
+          }
         ]
       }
     }
@@ -504,12 +739,15 @@
   "cloud_full_sacred": {
     "id": "cloud_full_sacred",
     "name": "雲満(聖護)",
-    "description": "範囲攻撃時、与えるダメージが増加",
+    "description": "範囲攻撃時、与えるダメージが増加(+60%)",
     "mechanics": {
       "stat_boost": {
         "condition": "attack_type_is_aoe",
         "stats": [
-          { "stat": "damage_dealt", "value": 0.50 }
+          {
+            "stat": "damage_dealt",
+            "value": 0.60
+          }
         ]
       }
     }
@@ -519,19 +757,27 @@
     "name": "星芒(聖護)",
     "description": "与ダメ増。反射・燃焼・封魂・ターン行動前後のダメージも増加",
     "effects": [
-      { "type": "stat_mod", "stat": "damage_dealt", "value": 0.50 }
+      {
+        "type": "stat_mod",
+        "stat": "damage_dealt",
+        "value": 0.50
+      }
     ],
     "special_properties": [
       {
         "type": "passive_damage_boost",
-        "target_damage_types": ["reflection", "burn", "seal_soul", "turn_action_damage"],
+        "target_damage_types": [
+          "reflection",
+          "burn",
+          "seal_soul",
+          "turn_action_damage"
+        ],
         "value": 0.50,
         "description": "反射や状態異常ダメージなどの特殊ダメージも増加させる"
       }
     ]
   },
-
-  "//_comment": "=== 4. 耐性・特殊効果系 ===",
+  "_comment_4": "=== 4. 耐性・特殊効果系 ===",
   "flower_words_sacred": {
     "id": "flower_words_sacred",
     "name": "花詞(聖護)",
@@ -539,7 +785,10 @@
     "special_properties": [
       {
         "type": "debuff_immunity",
-        "target_types": ["negative", "control"],
+        "target_types": [
+          "negative",
+          "control"
+        ],
         "cost_type": "reduce_duration",
         "cost_value": 1,
         "trigger": "on_debuff_attempt"
@@ -553,7 +802,9 @@
     "special_properties": [
       {
         "type": "debuff_immunity",
-        "target_types": ["control_restriction"],
+        "target_types": [
+          "control_restriction"
+        ],
         "cost_type": "reduce_duration",
         "cost_value": 1
       }
@@ -564,8 +815,16 @@
     "name": "心曜(聖護)",
     "description": "状態異常耐性が上昇し、毎ターンデバフを解除する",
     "effects": [
-      { "type": "stat_mod", "stat": "status_resistance", "value": 0.50 },
-      { "type": "auto_cleanse", "count": 1, "trigger": "pre_action" }
+      {
+        "type": "stat_mod",
+        "stat": "status_resistance",
+        "value": 0.50
+      },
+      {
+        "type": "auto_cleanse",
+        "count": 1,
+        "trigger": "pre_action"
+      }
     ]
   },
   "imperial_fire_sacred": {
@@ -573,7 +832,15 @@
     "name": "御火(聖護)",
     "description": "燃焼と火傷への耐性が大幅に上昇",
     "effects": [
-      { "type": "status_resistance_specific", "target_debuffs": ["burn_sin", "burn", "scald"], "value": 1.20 }
+      {
+        "type": "status_resistance_specific",
+        "target_debuffs": [
+          "burn_sin",
+          "burn",
+          "scald"
+        ],
+        "value": 1.20
+      }
     ]
   },
   "vitality_sacred": {
@@ -581,7 +848,14 @@
     "name": "生気(聖護)",
     "description": "流血への耐性が上昇",
     "effects": [
-      { "type": "status_resistance_specific", "target_debuffs": ["bleed_sin", "bleed"], "value": 0.50 }
+      {
+        "type": "status_resistance_specific",
+        "target_debuffs": [
+          "bleed_sin",
+          "bleed"
+        ],
+        "value": 0.50
+      }
     ]
   },
   "time_reversal_sacred": {
@@ -589,7 +863,10 @@
     "name": "時遡(聖護)",
     "description": "受けたダメージを無効化し、回復に変換する場合あり",
     "special_properties": [
-      { "type": "damage_conversion", "mode": "nullify_or_heal" }
+      {
+        "type": "damage_conversion",
+        "mode": "nullify_or_heal"
+      }
     ]
   },
   "rehabilitation_sacred": {
@@ -617,21 +894,29 @@
       },
       {
         "type": "status_immunity",
-        "target_types": ["negative", "sin"],
+        "target_types": [
+          "negative",
+          "sin"
+        ],
         "description": "デバフ・罪悪状態にならない"
       }
     ]
   },
-
-  "//_comment": "=== 5. 属性依存ダメージ耐性系 (一括定義) ===",
+  "_comment_5": "=== 5. 属性依存ダメージ耐性系 (一括定義) ===",
   "wisdom_sacred": {
     "id": "wisdom_sacred",
     "name": "英知(聖護)",
     "description": "知力依存攻撃および攻撃力依存攻撃のダメージをカット",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.0 },
-        { "dependency": "attack", "multiplier": 1.0 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.0
+        },
+        {
+          "dependency": "attack",
+          "multiplier": 1.0
+        }
       ]
     }
   },
@@ -641,7 +926,10 @@
     "description": "知力依存攻撃のダメージをカット（知力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 1.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -651,7 +939,10 @@
     "description": "知力依存攻撃のダメージをカット（知力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.0 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -661,7 +952,10 @@
     "description": "知力依存攻撃のダメージをカット（敏捷1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 1.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -671,7 +965,10 @@
     "description": "知力依存攻撃のダメージをカット（敏捷2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.0 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -681,7 +978,10 @@
     "description": "知力依存攻撃のダメージをカット（筋力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 1.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -691,7 +991,10 @@
     "description": "知力依存攻撃のダメージをカット（筋力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.0 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -701,7 +1004,10 @@
     "description": "敏捷依存攻撃のダメージをカット（知力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 1.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -711,7 +1017,10 @@
     "description": "敏捷依存攻撃のダメージをカット（知力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.0 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -721,7 +1030,10 @@
     "description": "敏捷依存攻撃のダメージをカット（敏捷1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 1.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -731,7 +1043,10 @@
     "description": "敏捷依存攻撃のダメージをカット（敏捷2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.0 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -741,7 +1056,10 @@
     "description": "敏捷依存攻撃のダメージをカット（筋力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 1.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -751,7 +1069,10 @@
     "description": "敏捷依存攻撃のダメージをカット（筋力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.0 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -761,7 +1082,10 @@
     "description": "筋力依存攻撃のダメージをカット（知力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 1.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -771,7 +1095,10 @@
     "description": "筋力依存攻撃のダメージをカット（知力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.0 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -781,7 +1108,10 @@
     "description": "筋力依存攻撃のダメージをカット（敏捷1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 1.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -791,7 +1121,10 @@
     "description": "筋力依存攻撃のダメージをカット（敏捷2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.0 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -801,7 +1134,10 @@
     "description": "筋力依存攻撃のダメージをカット（筋力1.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 1.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 1.5
+        }
       ]
     }
   },
@@ -811,7 +1147,10 @@
     "description": "筋力依存攻撃のダメージをカット（筋力2.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.0 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.0
+        }
       ]
     }
   },
@@ -821,7 +1160,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（知力3.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 3.0 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 3.0
+        }
       ]
     }
   },
@@ -831,7 +1173,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（敏捷2.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -841,7 +1186,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（敏捷3.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 3.0 }
+        {
+          "dependency": "agility",
+          "multiplier": 3.0
+        }
       ]
     }
   },
@@ -851,7 +1199,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（筋力2.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -861,7 +1212,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（筋力3.0倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 3.0 }
+        {
+          "dependency": "strength",
+          "multiplier": 3.0
+        }
       ]
     }
   },
@@ -871,7 +1225,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（知力2.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -881,7 +1238,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（筋力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 3.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 3.5
+        }
       ]
     }
   },
@@ -891,7 +1251,10 @@
     "description": "攻撃力依存攻撃のダメージをカット（敏捷依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 3.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 3.5
+        }
       ]
     }
   },
@@ -901,17 +1264,23 @@
     "description": "攻撃力依存攻撃のダメージをカット（知力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 3.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 3.5
+        }
       ]
     }
   },
   "torei_sacred": {
     "id": "torei_sacred",
     "name": "砥砺(聖護)",
-    "description": "筋力依存攻撃のダメージをカット（筋力依存）",
+    "description": "筋力依存攻撃のダメージをカット（筋力2.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -921,7 +1290,10 @@
     "description": "筋力依存攻撃のダメージをカット（敏捷依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -931,17 +1303,23 @@
     "description": "筋力依存攻撃のダメージをカット（知力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.5
+        }
       ]
     }
   },
   "yonagi_sacred": {
     "id": "yonagi_sacred",
     "name": "夜凪(聖護)",
-    "description": "敏捷依存攻撃のダメージをカット（筋力依存）",
+    "description": "敏捷依存攻撃のダメージをカット（筋力2.5倍）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -951,7 +1329,10 @@
     "description": "敏捷依存攻撃のダメージをカット（敏捷依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -961,7 +1342,10 @@
     "description": "敏捷依存攻撃のダメージをカット（知力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -971,7 +1355,10 @@
     "description": "知力依存攻撃のダメージをカット（筋力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "strength", "multiplier": 2.5 }
+        {
+          "dependency": "strength",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -981,7 +1368,10 @@
     "description": "知力依存攻撃のダメージをカット（敏捷依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "agility", "multiplier": 2.5 }
+        {
+          "dependency": "agility",
+          "multiplier": 2.5
+        }
       ]
     }
   },
@@ -991,7 +1381,10 @@
     "description": "知力依存攻撃のダメージをカット（知力依存）",
     "mechanics": {
       "damage_reduction": [
-        { "dependency": "intelligence", "multiplier": 2.5 }
+        {
+          "dependency": "intelligence",
+          "multiplier": 2.5
+        }
       ]
     }
   }
