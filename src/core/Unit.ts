@@ -1,4 +1,4 @@
-import { Decimal } from "./MockDecimal"; // 本番では decimal.js
+import { Decimal } from "./MockDecimal.ts"; // 本番では decimal.js
 import { StatKey, BuffId, BuffEffect } from "../types";
 
 export class Unit {

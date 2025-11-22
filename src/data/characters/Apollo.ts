@@ -1,5 +1,5 @@
 import { CharacterDef, ActiveSkill, BattleContext } from "../../types";
-import { Decimal } from "../../core/MockDecimal"; // 本番では decimal.js
+import { Decimal } from "../../core/MockDecimal.ts"; // 本番では decimal.js
 import { Unit } from "../../core/Unit";
 
 /**
