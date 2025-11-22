@@ -1,79 +1,79 @@
 {
   "hades_mr": {
     "name": "ハデス",
-    "file_path": "./characters/MR/hades_data.json",
+    "file_path": "./characters/hades_data.json",
     "rarity": "MR",
     "class": "archer"
   },
   "ashura_mr": {
     "name": "阿修羅",
-    "file_path": "./characters/MR/ashura_data.json",
+    "file_path": "./characters/ashura_data.json",
     "rarity": "MR",
     "class": "archer"
   },
   "izanami_mr": {
     "name": "イザナミ",
-    "file_path": "./characters/MR/izanami_data.json",
+    "file_path": "./characters/izanami_data.json",
     "rarity": "MR",
     "class": "archer"
   },
   "apollo_mr": {
     "name": "アポロ",
-    "file_path": "./characters/MR/apollo_data.json",
+    "file_path": "./characters/apollo_data.json",
     "rarity": "MR",
     "class": "archer"
   },
   "bishamonten_mr": {
     "name": "毘沙門天",
-    "file_path": "./characters/MR/bishamonten_data.json",
+    "file_path": "./characters/bishamonten_data.json",
     "rarity": "MR",
     "class": "warrior"
   },
   "gilgamesh_mr": {
     "name": "ギルガメッシュ",
-    "file_path": "./characters/MR/gilgamesh_data.json",
+    "file_path": "./characters/gilgamesh_data.json",
     "rarity": "MR",
     "class": "warrior"
   },
   "gonggong_mr": {
     "name": "共工",
-    "file_path": "./characters/MR/gonggong_data.json",
+    "file_path": "./characters/gonggong_data.json",
     "rarity": "MR",
     "class": "strategist"
   },
   "taiitsushinjin_mr": {
     "name": "太乙真人",
-    "file_path": "./characters/MR/taiitsushinjin_data.json",
+    "file_path": "./characters/taiitsushinjin_data.json",
     "rarity": "MR",
     "class": "strategist"
   },
   "kagutsuchi_mr": {
     "name": "カグヅチ",
-    "file_path": "./characters/MR/kagutsuchi_data.json",
+    "file_path": "./characters/kagutsuchi_data.json",
     "rarity": "MR",
     "class": "archer"
   },
   "arthur_mr": {
     "name": "アーサー王",
-    "file_path": "./characters/MR/arthur_data.json",
+    "file_path": "./characters/arthur_data.json",
     "rarity": "MR",
     "class": "warrior"
   },
   "merlin_mr": {
     "name": "マーリン",
-    "file_path": "./characters/MR/merlin_data.json",
+    "file_path": "./characters/merlin_data.json",
     "rarity": "MR",
     "class": "strategist"
   },
   "ranma_mr": {
     "name": "らんま",
-    "file_path": "./characters/MR/ranma_data.json",
+    "file_path": "./characters/ranma_data.json",
     "rarity": "MR",
     "class": "warrior"
   },
   "inarikami_mr": {
     "name": "稲荷神",
-    "file_path": "./characters/MR/inarikami_data.json",
+    "file_path": "./characters/inarikami_data.json",
     "rarity": "MR",
     "class": "strategist"
   }
