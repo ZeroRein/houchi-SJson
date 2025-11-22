@@ -1,0 +1,23 @@
+{
+  "configs": [
+    {
+      "config_id": "poison_standard_lv1",
+      "master_id": "poison_sin",
+      "params": {
+        "duration": 3,
+        "value1": 0.03,  
+        "tags": ["nature", "negative"]
+      }
+    },
+    {
+      "config_id": "weakness_heavy",
+      "master_id": "weakness_sin",
+      "params": {
+        "duration": 2,
+        "target_stat": "Attack",
+        "value1": -0.50,
+        "tags": ["debuff", "removable"]
+      }
+    }
+  ]
+}

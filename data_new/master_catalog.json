@@ -1,0 +1,25 @@
+{
+  "definitions": [
+    {
+      "id": "poison_sin",
+      "name": "毒(罪悪)",
+      "logic_key": "DoT", 
+      "icon": "icon_poison_purple",
+      "description_template": "毎ターンHPが{value1}%減少する"
+    },
+    {
+      "id": "weakness_sin",
+      "name": "虚弱(罪悪)",
+      "logic_key": "StatMod",
+      "icon": "icon_weakness_gray",
+      "description_template": "攻撃力が{value1}%低下"
+    },
+    {
+      "id": "stun_sin",
+      "name": "気絶(罪悪)",
+      "logic_key": "Control",
+      "icon": "icon_stun",
+      "description_template": "行動不能"
+    }
+  ]
+}
